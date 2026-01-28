@@ -1,10 +1,11 @@
 <template>
-  <div class="w-full space-y-4 pb-4">
-    <div class="flex py-3.5 justify-between items-center">
+  <div class="space-y-8">
+    <div class="flex justify-between items-center">
       <UInput
         v-model="globalFilter"
         placeholder="Buscar por nome, descrição ou valor"
         class="w-1/4"
+        size="lg"
       />
       <UButton
         label="Novo"
@@ -27,6 +28,7 @@
       class="flex-1"
       :ui="{
         root: 'shadow-sm border border-accented rounded',
+        tr: 'hover:light:bg-elevated hover:dark:bg-elevated/50 transition-all',
       }"
     />
 

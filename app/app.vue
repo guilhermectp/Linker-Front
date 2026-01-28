@@ -21,7 +21,7 @@
     </UHeader>
 
     <UMain>
-      <UContainer>
+      <UContainer class="p-4 lg:p-8">
         <NuxtPage />
       </UContainer>
     </UMain>
@@ -77,19 +77,29 @@ useSeoMeta({
 
 const items = ref<NavigationMenuItem[]>([
   {
+    label: "Clientes",
+    // icon: "lucide:users",
+    to: "/clientes",
+  },
+  {
+    label: "Suporte",
+    // icon: "lucide:clipboard-list",
+    to: "/",
+  },
+  {
     label: "Planos",
-    icon: "lucide:dollar-sign",
+    // icon: "lucide:tags",
     to: "/planos",
   },
-  // {
-  //   label: "Clientes",
-  //   icon: "lucide:users",
-  //   to: "/clientes",
-  // },
-  // {
-  //   label: "Suporte",
-  //   icon: "lucide:clipboard-list",
-  //   to: "/suporte",
-  // },
+  {
+    label: "Financeiro",
+    // icon: "lucide:dollar-sign",
+    to: "/",
+  },
+  {
+    label: "Sistema",
+    // icon: "lucide:settings-2",
+    to: "/",
+  },
 ]);
 </script>

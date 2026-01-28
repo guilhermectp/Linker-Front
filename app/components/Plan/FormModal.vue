@@ -53,7 +53,7 @@
           <UInput v-model="state.descricao" class="w-full" />
         </UFormField>
 
-        <div class="flex justify-between gap-3 pt-4">
+        <div class="flex justify-end gap-3 pt-4">
           <UButton
             label="Cancelar"
             color="neutral"
