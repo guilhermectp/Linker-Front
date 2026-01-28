@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
-import type { TClient } from "~/types/clients";
+import type { TGetCliente } from "~/types/clients";
 import { clientesMock } from "~/mocks/clientes";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
@@ -120,7 +120,7 @@ const emptyMessage = computed(() => {
   return "Nenhum cliente encontrado";
 });
 
-const columns: TableColumn<TClient>[] = [
+const columns: TableColumn<TGetCliente>[] = [
   {
     id: "expand",
     cell: ({ row }) =>

@@ -1,6 +1,6 @@
-import type { TClient } from "~/types/clients";
+import type { TGetClient } from "~/types/clients";
 
-export const clientesMock: TClient[] = [
+export const clientesMock: TGetClient[] = [
   {
     id: "user000",
     cpf: "068.850.571-69",

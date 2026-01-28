@@ -6,7 +6,7 @@ export type TPontoConexaoStatus =
   | "BLOQUEADO"
   | "CANCELADO";
 
-export type TPontoConexao = {
+export type TGetPontoConexao = {
   id: string;
   status: TPontoConexaoStatus;
   diaVencimento: number;
@@ -39,4 +39,12 @@ export type TEnderecoRural = TEnderecoBase & {
   tipoEndereco: "RURAL";
   cidadeReferencia?: string;
   nomeLocal?: string;
+};
+
+export type TPostPontoConexao = {
+  planoId: string;
+  diaVencimento: number;
+  loginMK: string;
+  senhaMK: string;
+  endereco: TEnderecoRural | TEnderecoUrbano;
 };
