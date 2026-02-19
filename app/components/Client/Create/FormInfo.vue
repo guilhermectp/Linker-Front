@@ -6,6 +6,7 @@
         class="w-full"
         size="lg"
         placeholder="xxx.xxx.xxx-xx"
+        v-maska="'###.###.###-##'"
       />
     </UFormField>
 
@@ -33,6 +34,7 @@
         class="w-full"
         size="lg"
         placeholder="(67) 91234-5678"
+        v-maska="'(##) #####-####'"
       />
     </UFormField>
 
@@ -52,6 +54,8 @@
 </template>
 
 <script setup lang="ts">
+import { vMaska } from "maska/vue";
+
 const props = defineProps<{
   modelValue: any;
 }>();

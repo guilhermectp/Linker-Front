@@ -5,8 +5,8 @@
         v-model="model.ponto.endereco.tipoEndereco"
         orientation="horizontal"
         variant="card"
-        default-value="URBANO"
         :items="items"
+        @update:model-value="(e) => toggleAddressType(e as TTipoEndereco)"
       />
     </UFormField>
 
@@ -15,7 +15,11 @@
       class="grid grid-cols-2 gap-6"
     >
       <UFormField label="CEP" name="ponto.endereco.cep" required>
-        <UInput v-model="model.ponto.endereco.cep" class="w-full" />
+        <UInput
+          v-model="model.ponto.endereco.cep"
+          class="w-full"
+          v-maska="'##.###-###'"
+        />
       </UFormField>
 
       <UFormField label="Município" name="ponto.endereco.cidade" required>
@@ -82,6 +86,9 @@
 </template>
 
 <script setup lang="ts">
+import { vMaska } from "maska/vue";
+import type { TTipoEndereco } from "~/types/connectionPoint";
+
 const props = defineProps<{
   modelValue: any;
 }>();
@@ -98,7 +105,7 @@ const items = [
   { label: "Área Rural", value: "RURAL" },
 ];
 
-const toggleAddressType = (tipo: "URBANO" | "RURAL") => {
+const toggleAddressType = (tipo: TTipoEndereco) => {
   if (tipo === "URBANO") {
     model.value.ponto.endereco = {
       tipoEndereco: "URBANO",

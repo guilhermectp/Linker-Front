@@ -3,7 +3,9 @@
     <UFormField label="Plano" name="ponto.planoId" required>
       <USelect
         v-model="model.ponto.planoId"
-        :items="['Plano Residencial', 'Plano Gamer', 'Plano Empresarial']"
+        :items="data"
+        label-key="nome"
+        value-key="id"
         class="w-full"
       />
     </UFormField>
@@ -27,6 +29,8 @@
 </template>
 
 <script setup lang="ts">
+import type { TPlan } from "~/types/plan";
+
 const props = defineProps<{
   modelValue: any;
 }>();
@@ -36,6 +40,12 @@ const emit = defineEmits(["update:modelValue"]);
 const model = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
+});
+
+const { asyncFetch } = useApi();
+
+const { data, status, error, refresh } = await asyncFetch<TPlan[]>("/planos", {
+  key: "planos-get-all-select",
 });
 </script>
 
