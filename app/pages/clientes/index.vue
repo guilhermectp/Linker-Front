@@ -7,7 +7,11 @@
         class="w-1/4"
         size="lg"
       />
-      <UButton label="Novo" icon="i-lucide:plus" @click="" />
+      <UButton
+        label="Novo"
+        icon="i-lucide:plus"
+        @click="navigateTo('/clientes/criar')"
+      />
     </div>
 
     <UTable
