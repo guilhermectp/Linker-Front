@@ -40,11 +40,3 @@ export type TEnderecoRural = TEnderecoBase & {
   cidadeReferencia?: string;
   nomeLocal?: string;
 };
-
-export type TPostPontoConexao = {
-  planoId: string;
-  diaVencimento: number;
-  loginMK: string;
-  senhaMK: string;
-  endereco: TEnderecoRural | TEnderecoUrbano;
-};
