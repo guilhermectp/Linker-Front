@@ -194,11 +194,11 @@
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 import { clientesMock } from "~/mocks/clientes";
-import type { TGetClient } from "~/types/clients";
+import type { TGetCliente } from "~/types/clients";
 
 const route = useRoute();
 const id = route.params.id;
-const client = ref<TGetClient>({} as TGetClient);
+const client = ref<TGetCliente>({} as TGetCliente);
 const selectedPoint = ref<string | null>(null);
 const selectedTab = ref("boletos");
 
