@@ -61,7 +61,7 @@ const ruralAddressSchema = z.object({
   cidadeReferencia: z
     .string()
     .min(2, "Referência de proximidade é obrigatório"),
-  complemento: z.string().min(2, "Complemento é obrigatório"),
+  complemento: z.string().optional(),
   latitude: z.string().optional(),
   longitude: z.string().optional(),
 });
