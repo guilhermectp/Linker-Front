@@ -1,54 +1,74 @@
+import type { AsyncDataOptions } from "#app";
+import type { NitroFetchOptions, AvailableRouterMethod } from "nitropack";
+
+type ApiAsyncOptions<T> = AsyncDataOptions<T> &
+  Omit<
+    NitroFetchOptions<any, AvailableRouterMethod<any>>,
+    "onRequest" | "onResponse" | "onResponseError" | "onRequestError"
+  >;
+// Omitir os interceptors para decidir tratar eles globalmente no useApi
+
 export const useApi = () => {
   const config = useRuntimeConfig();
+  const token = useCookie("access_token");
   const baseURL = config.public.API_BASE;
 
-  const getHeaders = (additionalHeaders: any = {}) => {
-    const token = useCookie("access_token").value;
+  const getFetchOptions = (customOptions: NitroFetchOptions<any>) => {
+    const { baseURL: customBaseURL, ...rest } = customOptions;
     return {
-      Authorization: token ? `Bearer ${token}` : "",
-      "Content-Type": "application/json",
-      ...additionalHeaders,
+      baseURL: customBaseURL ?? baseURL,
+      headers: {
+        ...(token.value && { Authorization: `Bearer ${token.value}` }),
+        "Content-Type": "application/json",
+        ...rest.headers,
+      },
+      ...rest,
     };
   };
 
-  const asyncFetch = <T>(path: string, options: any = {}) => {
-    const fetchKey = toValue(options.key) || `api-${path}`;
+  const asyncFetch = <T = unknown, E = unknown>(
+    key: string,
+    path: string,
+    options: ApiAsyncOptions<T> = {},
+  ) => {
+    const {
+      server,
+      lazy,
+      immediate,
+      deep,
+      dedupe,
+      default: defaultData,
+      transform,
+      pick,
+      watch,
+      getCachedData,
+      ...fetchOptions
+    } = options;
 
-    return useAsyncData<T>(
-      fetchKey,
-      () =>
-        $fetch<T>(path, {
-          ...options,
-          baseURL,
-          headers: getHeaders(options.headers),
-        }),
+    return useAsyncData<T, E>(
+      key,
+      () => $fetch<T>(path, getFetchOptions(fetchOptions)),
       {
-        lazy: options.lazy ?? false,
-        watch: options.watch || [],
-        ...options.asyncDataOptions,
+        server,
+        lazy,
+        immediate,
+        deep,
+        dedupe,
+        default: defaultData,
+        transform,
+        pick,
+        watch,
+        getCachedData,
       },
     );
   };
 
-  const fetch = async <T>(path: string, options: any = {}) => {
-    try {
-      const data = await $fetch<T>(path, {
-        ...options,
-        baseURL,
-        headers: getHeaders(options.headers),
-      });
-      return { data, error: null };
-    } catch (error: any) {
-      return {
-        data: null,
-        error: {
-          status: error?.response?.status,
-          message:
-            error?.data?.message || error?.message || "Erro desconhecido",
-        },
-      };
-    }
+  const fetchApi = <T = unknown>(
+    path: string,
+    options: NitroFetchOptions<any>,
+  ) => {
+    return $fetch<T>(path, getFetchOptions({ method: "GET", ...options }));
   };
 
-  return { asyncFetch, fetch };
+  return { asyncFetch, fetchApi };
 };
