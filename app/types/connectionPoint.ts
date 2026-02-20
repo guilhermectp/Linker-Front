@@ -26,8 +26,8 @@ export type TEnderecoUrbano = TEnderecoBase & {
 
 export type TEnderecoRural = TEnderecoBase & {
   tipoEndereco: "RURAL";
-  cidadeReferencia?: string;
-  nomeLocal?: string;
+  cidadeReferencia: string;
+  nomeLocal: string;
 };
 
 export type TGetPontoConexao = {
