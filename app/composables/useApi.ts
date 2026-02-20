@@ -6,7 +6,7 @@ type ApiAsyncOptions<T> = AsyncDataOptions<T> &
     NitroFetchOptions<any, AvailableRouterMethod<any>>,
     "onRequest" | "onResponse" | "onResponseError" | "onRequestError"
   >;
-// Omitir os interceptors para decidir tratar eles globalmente no useApi
+// Omite os interceptors para decidir tratar eles globalmente no useApi
 
 export const useApi = () => {
   const config = useRuntimeConfig();
@@ -63,11 +63,28 @@ export const useApi = () => {
     );
   };
 
-  const fetchApi = <T = unknown>(
+  const fetchApi = async <T = unknown>(
     path: string,
     options: NitroFetchOptions<any>,
-  ) => {
-    return $fetch<T>(path, getFetchOptions({ method: "GET", ...options }));
+  ): Promise<{ data: T | null; error: any | null }> => {
+    try {
+      const data = await $fetch<T>(
+        path,
+        getFetchOptions({ method: "GET", ...options }),
+      );
+
+      return { data, error: null };
+    } catch (err: any) {
+      return {
+        data: null,
+        error: {
+          status: err?.response?.status,
+          statusText: err?.response?.statusText,
+          message: err?.data?.message || err?.message || "Erro desconhecido",
+          raw: err,
+        },
+      };
+    }
   };
 
   return { asyncFetch, fetchApi };
