@@ -68,9 +68,10 @@ const globalFilter = ref("");
 
 const { asyncFetch } = useApi();
 
-const { data, status, error, refresh } = await asyncFetch<any>("/planos", {
-  key: "planos-get-all-page",
-});
+const { data, status, error, refresh } = await asyncFetch<any>(
+  `plans-fetch-all-page`,
+  "/planos",
+);
 
 const emptyMessage = computed(() => {
   if (status.value === "error" && error) return getErrorMessageApi(error.value);

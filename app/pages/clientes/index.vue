@@ -102,6 +102,7 @@ import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 
 const UButton = resolveComponent("UButton");
 const UBadge = resolveComponent("UBadge");
+const { asyncFetch } = useApi();
 
 const table = useTemplateRef("table");
 
@@ -112,11 +113,10 @@ const pagination = ref({
 
 const globalFilter = ref("");
 
-const { asyncFetch } = useApi();
-
-const { data, status, error, refresh } = await asyncFetch<any>("/clientes", {
-  key: "clients-get-all-page",
-});
+const { data, status, error, refresh } = await asyncFetch<any>(
+  "clients-fetch-all-page",
+  "/clientes",
+);
 
 const emptyMessage = computed(() => {
   if (status.value === "error" && error) return getErrorMessageApi(error.value);
