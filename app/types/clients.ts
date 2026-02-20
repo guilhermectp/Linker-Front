@@ -1,4 +1,4 @@
-import type { TGetPontoConexao, TPostPontoConexao } from "./connectionPoint";
+import type { TGetPontoConexao } from "./connectionPoint";
 
 export type TClientStatus = "ATIVO" | "DESATIVADO";
 
@@ -13,11 +13,10 @@ export type TGetCliente = {
   pontos: TGetPontoConexao[];
 };
 
-export type TPostCliente = {
+export type TFormCliente = {
   nome: string;
   cpf: string;
   email: string;
   telefone: string;
-  senhaCentralCliente: string;
-  ponto: TPostPontoConexao;
+  senhaCentralCliente?: string;
 };

@@ -71,7 +71,7 @@
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type { TPlan } from "~/types/plan";
-const { fetch } = useApi();
+const { fetchApi } = useApi();
 const toast = useToast();
 
 const schema = z.object({
@@ -111,7 +111,7 @@ const onSubmit = (event: FormSubmitEvent<Schema>) => {
 };
 
 const submitPlan = async (typeRequest: "POST" | "PUT", plan: TPlan) => {
-  const { error } = await fetch(`/planos`, {
+  const { error } = await fetchApi(`/planos`, {
     method: typeRequest,
     body: plan,
   });

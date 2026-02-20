@@ -18,13 +18,10 @@
         </UBadge>
       </div>
 
-      <!-- editar informações base -->
-      <!-- editar senha do portal do cliente -->
+      <!-- editar informações base e  senha do portal do cliente-->
       <!-- ativar/desativar cliente -->
 
-      <UButton icon="i-heroicons-pencil" color="neutral">
-        Editar Cliente
-      </UButton>
+      <ClientEditPersonalInformation :client-to-edit="client" />
     </div>
 
     <UCard variant="subtle">
@@ -191,13 +188,18 @@
 </template>
 
 <script setup lang="ts">
+import ConnectionPointAddress from "~/components/Client/Edit/ConnectionPointAddress.vue";
+import ConnectionPointPlan from "~/components/Client/Edit/ConnectionPointPlan.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 import { clientesMock } from "~/mocks/clientes";
 import type { TGetCliente } from "~/types/clients";
+import type { TGetPontoConexao } from "~/types/connectionPoint";
 
+const overlay = useOverlay();
 const route = useRoute();
 const id = route.params.id;
+
 const client = ref<TGetCliente>({} as TGetCliente);
 const selectedPoint = ref<string | null>(null);
 const selectedTab = ref("boletos");
@@ -217,17 +219,31 @@ const tabs = [
   },
 ];
 
-const getPontoActions = (ponto: any) => [
+const getPontoActions = (ponto: TGetPontoConexao) => [
   [
     {
       label: "Editar Plano",
       icon: "i-heroicons-pencil",
-      click: () => console.log("Editar plano", ponto),
+      click: () => {
+        const modal = overlay.create(ConnectionPointPlan);
+        modal.open({
+          clientToEdit: {
+            planoId: ponto.id,
+            diaVencimento: ponto.diaVencimento,
+            loginMK: ponto.loginMK,
+          },
+        });
+      },
     },
     {
       label: "Editar Endereço",
       icon: "i-heroicons-map",
-      click: () => console.log("Editar endereço", ponto),
+      click: () => {
+        const modal = overlay.create(ConnectionPointAddress);
+        modal.open({
+          clientToEdit: ponto.endereco,
+        });
+      },
     },
   ],
   [

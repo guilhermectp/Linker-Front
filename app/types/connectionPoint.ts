@@ -6,17 +6,6 @@ export type TPontoConexaoStatus =
   | "BLOQUEADO"
   | "CANCELADO";
 
-export type TGetPontoConexao = {
-  id: string;
-  status: TPontoConexaoStatus;
-  diaVencimento: number;
-  diaUltimoPagamento: string;
-  loginMK: string;
-  senhaMK: string;
-  plano: TPlan;
-  endereco: TEnderecoUrbano | TEnderecoRural;
-};
-
 export type TTipoEndereco = "URBANO" | "RURAL";
 
 export type TEnderecoBase = {
@@ -41,10 +30,22 @@ export type TEnderecoRural = TEnderecoBase & {
   nomeLocal?: string;
 };
 
-export type TPostPontoConexao = {
+export type TGetPontoConexao = {
+  id: string;
+  status: TPontoConexaoStatus;
+  diaVencimento: number;
+  diaUltimoPagamento: string;
+  loginMK: string;
+  senhaMK: string;
+  plano: TPlan;
+  endereco: TEnderecoUrbano | TEnderecoRural;
+};
+
+export type TFormPontoConexao = {
   planoId: string;
   diaVencimento: number;
   loginMK: string;
-  senhaMK: string;
-  endereco: TEnderecoRural | TEnderecoUrbano;
+  senhaMK?: string;
 };
+
+export type TFormEndereco = TEnderecoUrbano | TEnderecoRural;

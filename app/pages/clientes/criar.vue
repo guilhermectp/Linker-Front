@@ -18,11 +18,11 @@
         </template>
 
         <template #plan>
-          <ClientCreateFormPlan :model-value="state" />
+          <ClientCreateFormPlan :model-value="state.ponto" />
         </template>
 
         <template #address>
-          <ClientCreateFormAddress :model-value="state" />
+          <ClientCreateFormAddress :model-value="state.ponto.endereco" />
         </template>
       </UStepper>
 
@@ -40,7 +40,6 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { StepperItem } from "@nuxt/ui";
-const { fetch } = useApi();
 const toast = useToast();
 
 const urbanAddressSchema = z.object({

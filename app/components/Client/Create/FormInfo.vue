@@ -7,6 +7,7 @@
         size="lg"
         placeholder="xxx.xxx.xxx-xx"
         v-maska="'###.###.###-##'"
+        :disabled="isEditing"
       />
     </UFormField>
 
@@ -41,7 +42,7 @@
     <UFormField
       label="Senha de acesso ao portal do cliente"
       name="senhaCentralCliente"
-      required
+      :required="props.isEditing ? false : true"
     >
       <UInput
         v-model="model.senhaCentralCliente"
@@ -55,10 +56,12 @@
 
 <script setup lang="ts">
 import { vMaska } from "maska/vue";
+import type { TFormCliente } from "~/types/clients";
 
-const props = defineProps<{
-  modelValue: any;
-}>();
+const props = defineProps({
+  modelValue: { type: Object as PropType<TFormCliente>, required: true },
+  isEditing: { type: Boolean, default: false },
+});
 
 const emit = defineEmits(["update:modelValue"]);
 

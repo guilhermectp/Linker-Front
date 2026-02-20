@@ -2,7 +2,7 @@
   <div class="bg-muted border border-accented rounded-lg p-4 space-y-6">
     <UFormField label="Localidade" name="ponto.endereco.tipoEndereco" required>
       <URadioGroup
-        v-model="model.ponto.endereco.tipoEndereco"
+        v-model="model.tipoEndereco"
         orientation="horizontal"
         variant="card"
         :items="items"
@@ -10,33 +10,26 @@
       />
     </UFormField>
 
-    <div
-      v-if="model.ponto.endereco.tipoEndereco === 'URBANO'"
-      class="grid grid-cols-2 gap-6"
-    >
+    <div v-if="model.tipoEndereco === 'URBANO'" class="grid grid-cols-2 gap-6">
       <UFormField label="CEP" name="ponto.endereco.cep" required>
-        <UInput
-          v-model="model.ponto.endereco.cep"
-          class="w-full"
-          v-maska="'##.###-###'"
-        />
+        <UInput v-model="model.cep" class="w-full" v-maska="'##.###-###'" />
       </UFormField>
 
       <UFormField label="Município" name="ponto.endereco.cidade" required>
-        <UInput v-model="model.ponto.endereco.cidade" class="w-full" />
+        <UInput v-model="model.cidade" class="w-full" />
       </UFormField>
 
       <UFormField label="Bairro" name="ponto.endereco.bairro" required>
-        <UInput v-model="model.ponto.endereco.bairro" class="w-full" />
+        <UInput v-model="model.bairro" class="w-full" />
       </UFormField>
 
       <UFormField label="Rua" name="ponto.endereco.rua" required>
-        <UInput v-model="model.ponto.endereco.rua" class="w-full" />
+        <UInput v-model="model.rua" class="w-full" />
       </UFormField>
 
       <UFormField label="Número" name="ponto.endereco.numero" required>
         <UInputNumber
-          v-model="model.ponto.endereco.numero"
+          v-model="model.numero"
           :min="1"
           :increment="false"
           :decrement="false"
@@ -51,17 +44,14 @@
         name="ponto.endereco.cidadeReferencia"
         required
       >
-        <UInput
-          v-model="model.ponto.endereco.cidadeReferencia"
-          class="w-full"
-        />
+        <UInput v-model="model.cidadeReferencia" class="w-full" />
       </UFormField>
       <UFormField
         label="Nome da Fazenda/Chácara/Sítio"
         name="ponto.endereco.nomeLocal"
         required
       >
-        <UInput v-model="model.ponto.endereco.nomeLocal" class="w-full" />
+        <UInput v-model="model.nomeLocal" class="w-full" />
       </UFormField>
     </div>
 
@@ -69,17 +59,17 @@
       <UFormField
         label="Complemento"
         name="ponto.endereco.complemento"
-        :required="model.ponto.endereco.tipoEndereco === 'RURAL'"
+        :required="model.tipoEndereco === 'RURAL'"
       >
-        <UInput v-model="model.ponto.endereco.complemento" class="w-full" />
+        <UInput v-model="model.complemento" class="w-full" />
       </UFormField>
 
       <UFormField label="Latitude" name="ponto.endereco.latitude">
-        <UInput v-model="model.ponto.endereco.latitude" class="w-full" />
+        <UInput v-model="model.latitude" class="w-full" />
       </UFormField>
 
       <UFormField label="Longitude" name="ponto.endereco.longitude">
-        <UInput v-model="model.ponto.endereco.longitude" class="w-full" />
+        <UInput v-model="model.longitude" class="w-full" />
       </UFormField>
     </div>
   </div>
@@ -87,11 +77,15 @@
 
 <script setup lang="ts">
 import { vMaska } from "maska/vue";
-import type { TTipoEndereco } from "~/types/connectionPoint";
+import type { TFormEndereco, TTipoEndereco } from "~/types/connectionPoint";
 
-const props = defineProps<{
-  modelValue: any;
-}>();
+const props = defineProps({
+  modelValue: {
+    type: Object as PropType<TFormEndereco>,
+    required: true,
+  },
+  isEditing: { type: Boolean, default: false },
+});
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -107,7 +101,7 @@ const items = [
 
 const toggleAddressType = (tipo: TTipoEndereco) => {
   if (tipo === "URBANO") {
-    model.value.ponto.endereco = {
+    model.value = {
       tipoEndereco: "URBANO",
       cep: "",
       cidade: "",
@@ -118,7 +112,7 @@ const toggleAddressType = (tipo: TTipoEndereco) => {
       longitude: "",
     };
   } else {
-    model.value.ponto.endereco = {
+    model.value = {
       tipoEndereco: "RURAL",
       cidadeReferencia: "",
       nomeLocal: "",
