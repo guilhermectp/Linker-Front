@@ -8,10 +8,7 @@
         @submit.prevent="onSubmit"
         ref="form"
       >
-        <ClientCreateFormAddress
-          v-model="state.ponto.endereco"
-          :is-editing="true"
-        />
+        <ClientFormAddress v-model="state.ponto.endereco" :is-editing="true" />
 
         <div class="flex justify-between pt-6">
           <UButton

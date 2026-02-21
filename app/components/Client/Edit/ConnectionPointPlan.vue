@@ -8,7 +8,7 @@
         @submit.prevent="onSubmit"
         ref="form"
       >
-        <ClientCreateFormPlan v-model="state.ponto" :is-editing="true" />
+        <ClientFormPlan v-model="state.ponto" :is-editing="true" />
 
         <div class="flex justify-between pt-6">
           <UButton

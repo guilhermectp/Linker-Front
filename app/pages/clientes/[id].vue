@@ -56,7 +56,7 @@
           </span>
           <span v-else>Informações de assinatura</span>
         </h3>
-        <UButton icon="i-heroicons-plus" label="Adicionar Ponto" />
+        <ClientEditAddConnectionPoint />
       </div>
 
       <div

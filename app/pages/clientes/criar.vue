@@ -14,15 +14,15 @@
         :disabled="true"
       >
         <template #info>
-          <ClientCreateFormInfo v-model="state" />
+          <ClientFormInfo v-model="state" />
         </template>
 
         <template #plan>
-          <ClientCreateFormPlan v-model="state.ponto" />
+          <ClientFormPlan v-model="state.ponto" />
         </template>
 
         <template #address>
-          <ClientCreateFormAddress v-model="state.ponto.endereco" />
+          <ClientFormAddress v-model="state.ponto.endereco" />
         </template>
       </UStepper>
 
