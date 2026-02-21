@@ -42,10 +42,14 @@ export type TGetPontoConexao = {
 };
 
 export type TFormPontoConexao = {
+  pontoId?: string;
   planoId: string;
   diaVencimento: number;
   loginMK: string;
   senhaMK?: string;
 };
 
-export type TFormEndereco = TEnderecoUrbano | TEnderecoRural;
+export type TFormEndereco = { pontoId?: string } & (
+  | TEnderecoUrbano
+  | TEnderecoRural
+);

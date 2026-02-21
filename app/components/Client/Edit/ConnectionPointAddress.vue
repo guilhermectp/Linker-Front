@@ -8,7 +8,10 @@
         @submit.prevent="onSubmit"
         ref="form"
       >
-        <ClientCreateFormAddress :model-value="state" :is-editing="true" />
+        <ClientCreateFormAddress
+          v-model="state.ponto.endereco"
+          :is-editing="true"
+        />
 
         <div class="flex justify-between pt-6">
           <UButton
@@ -51,10 +54,14 @@ const ruralAddressSchema = z.object({
   longitude: z.string().optional(),
 });
 
-const addressSchema = z.discriminatedUnion("tipoEndereco", [
-  urbanAddressSchema,
-  ruralAddressSchema,
-]);
+const addressSchema = z.object({
+  ponto: z.object({
+    endereco: z.discriminatedUnion("tipoEndereco", [
+      urbanAddressSchema,
+      ruralAddressSchema,
+    ]),
+  }),
+});
 
 type TSchema = z.infer<typeof addressSchema>;
 
@@ -69,25 +76,33 @@ const initialFormState = (): TSchema => {
   const initial = props.clientToEdit;
   if (initial.tipoEndereco === "URBANO") {
     return {
-      tipoEndereco: "URBANO",
-      cep: initial.cep ?? "",
-      cidade: initial.cidade ?? "",
-      bairro: initial.bairro ?? "",
-      rua: initial.rua ?? "",
-      numero: initial.numero ?? 0,
-      complemento: initial.complemento ?? "",
-      latitude: initial.latitude ?? "",
-      longitude: initial.longitude ?? "",
+      ponto: {
+        endereco: {
+          tipoEndereco: "URBANO",
+          cep: initial.cep ?? "",
+          cidade: initial.cidade ?? "",
+          bairro: initial.bairro ?? "",
+          rua: initial.rua ?? "",
+          numero: initial.numero ?? 0,
+          complemento: initial.complemento ?? "",
+          latitude: initial.latitude ?? "",
+          longitude: initial.longitude ?? "",
+        },
+      },
     };
   }
 
   return {
-    tipoEndereco: "RURAL",
-    nomeLocal: initial.nomeLocal ?? "",
-    cidadeReferencia: initial.cidadeReferencia ?? "",
-    complemento: initial.complemento ?? "",
-    latitude: initial.latitude ?? "",
-    longitude: initial.longitude ?? "",
+    ponto: {
+      endereco: {
+        tipoEndereco: "RURAL",
+        nomeLocal: initial.nomeLocal ?? "",
+        cidadeReferencia: initial.cidadeReferencia ?? "",
+        complemento: initial.complemento ?? "",
+        latitude: initial.latitude ?? "",
+        longitude: initial.longitude ?? "",
+      },
+    },
   };
 };
 

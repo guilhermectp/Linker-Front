@@ -12,7 +12,7 @@
         @submit.prevent="onSubmit"
         ref="form"
       >
-        <ClientCreateFormInfo :model-value="state" :is-editing="true" />
+        <ClientCreateFormInfo v-model="state" :is-editing="true" />
 
         <div class="flex justify-between pt-6">
           <UButton

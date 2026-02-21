@@ -14,15 +14,15 @@
         :disabled="true"
       >
         <template #info>
-          <ClientCreateFormInfo :model-value="state" />
+          <ClientCreateFormInfo v-model="state" />
         </template>
 
         <template #plan>
-          <ClientCreateFormPlan :model-value="state.ponto" />
+          <ClientCreateFormPlan v-model="state.ponto" />
         </template>
 
         <template #address>
-          <ClientCreateFormAddress :model-value="state.ponto.endereco" />
+          <ClientCreateFormAddress v-model="state.ponto.endereco" />
         </template>
       </UStepper>
 
@@ -125,11 +125,11 @@ const state = reactive<FullSchema>({
       bairro: "",
       rua: "",
       numero: 0,
-      // cidadeReferencia: "",
-      // nomeLocal: "",
       complemento: "",
       latitude: "",
       longitude: "",
+      // cidadeReferencia: "",
+      // nomeLocal: "",
     },
   },
 });

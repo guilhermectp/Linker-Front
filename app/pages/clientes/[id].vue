@@ -224,11 +224,12 @@ const getPontoActions = (ponto: TGetPontoConexao) => [
     {
       label: "Editar Plano",
       icon: "i-heroicons-pencil",
-      click: () => {
+      onSelect: () => {
         const modal = overlay.create(ConnectionPointPlan);
         modal.open({
           clientToEdit: {
-            planoId: ponto.id,
+            pontoId: ponto.id,
+            planoId: ponto.plano.id!,
             diaVencimento: ponto.diaVencimento,
             loginMK: ponto.loginMK,
           },
@@ -238,11 +239,9 @@ const getPontoActions = (ponto: TGetPontoConexao) => [
     {
       label: "Editar Endereço",
       icon: "i-heroicons-map",
-      click: () => {
+      onSelect: () => {
         const modal = overlay.create(ConnectionPointAddress);
-        modal.open({
-          clientToEdit: ponto.endereco,
-        });
+        modal.open({ clientToEdit: { pontoId: ponto.id, ...ponto.endereco } });
       },
     },
   ],
@@ -250,7 +249,7 @@ const getPontoActions = (ponto: TGetPontoConexao) => [
     {
       label: "Cancelar Ponto",
       icon: "i-heroicons-trash",
-      click: () => console.log("Cancelar ponto", ponto),
+      onSelect: () => console.log("Cancelar ponto", ponto),
     },
   ],
 ];

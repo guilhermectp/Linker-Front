@@ -56,11 +56,7 @@
     </div>
 
     <div class="grid grid-cols-2 gap-6">
-      <UFormField
-        label="Complemento"
-        name="ponto.endereco.complemento"
-        :required="model.tipoEndereco === 'RURAL'"
-      >
+      <UFormField label="Complemento" name="ponto.endereco.complemento">
         <UInput v-model="model.complemento" class="w-full" />
       </UFormField>
 
@@ -99,28 +95,29 @@ const items = [
   { label: "Área Rural", value: "RURAL" },
 ];
 
+const createUrbanAddress = () => ({
+  tipoEndereco: "URBANO" as const,
+  cep: "",
+  cidade: "",
+  bairro: "",
+  rua: "",
+  numero: 0,
+  complemento: "",
+  latitude: "",
+  longitude: "",
+});
+
+const createRuralAddress = () => ({
+  tipoEndereco: "RURAL" as const,
+  cidadeReferencia: "",
+  nomeLocal: "",
+  complemento: "",
+  latitude: "",
+  longitude: "",
+});
+
 const toggleAddressType = (tipo: TTipoEndereco) => {
-  if (tipo === "URBANO") {
-    model.value = {
-      tipoEndereco: "URBANO",
-      cep: "",
-      cidade: "",
-      bairro: "",
-      rua: "",
-      numero: 0,
-      latitude: "",
-      longitude: "",
-    };
-  } else {
-    model.value = {
-      tipoEndereco: "RURAL",
-      cidadeReferencia: "",
-      nomeLocal: "",
-      complemento: "",
-      latitude: "",
-      longitude: "",
-    };
-  }
+  model.value = tipo === "URBANO" ? createUrbanAddress() : createRuralAddress();
 };
 </script>
 

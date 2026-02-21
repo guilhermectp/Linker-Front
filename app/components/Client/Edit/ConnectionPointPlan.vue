@@ -8,7 +8,7 @@
         @submit.prevent="onSubmit"
         ref="form"
       >
-        <ClientCreateFormPlan :model-value="state" :is-editing="true" />
+        <ClientCreateFormPlan v-model="state.ponto" :is-editing="true" />
 
         <div class="flex justify-between pt-6">
           <UButton
@@ -29,14 +29,22 @@ import * as z from "zod";
 import type { TFormPontoConexao } from "~/types/connectionPoint";
 
 const planSchema = z.object({
-  planoId: z.uuid("Plano inválido"),
-  diaVencimento: z
-    .number()
-    .int()
-    .min(1, "Dia mínimo é 1")
-    .max(31, "Dia máximo é 31"),
-  loginMK: z.string().min(8, "O login deve ter pelo menos 8 caracteres"),
-  senhaMK: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+  ponto: z.object({
+    planoId: z.uuid("Plano inválido"),
+    diaVencimento: z
+      .number()
+      .int()
+      .min(1, "Dia mínimo é 1")
+      .max(31, "Dia máximo é 31"),
+    loginMK: z.string().min(8, "O login deve ter pelo menos 8 caracteres"),
+    senhaMK: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || val.length >= 8,
+        "A senha deve ter pelo menos 8 caracteres",
+      ),
+  }),
 });
 
 type TSchema = z.infer<typeof planSchema>;
@@ -49,10 +57,12 @@ const props = defineProps({
 });
 
 const state = reactive<TSchema>({
-  planoId: props.clientToEdit.planoId,
-  diaVencimento: props.clientToEdit.diaVencimento || 10,
-  loginMK: props.clientToEdit.loginMK,
-  senhaMK: "",
+  ponto: {
+    planoId: props.clientToEdit.planoId || "",
+    diaVencimento: props.clientToEdit.diaVencimento || 10,
+    loginMK: props.clientToEdit.loginMK || "",
+    senhaMK: "",
+  },
 });
 
 const form = ref();
