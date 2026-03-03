@@ -9,7 +9,7 @@
           variant="ghost"
           to="/clientes"
         />
-        <h1 class="text-2xl font-bold">{{ client.nome }}</h1>
+        <h1 class="text-2xl font-medium">{{ client.nome }}</h1>
         <UBadge
           :color="client.status === 'ATIVO' ? 'primary' : 'neutral'"
           size="lg"
@@ -81,86 +81,108 @@
           ]"
           @click="client.pontos?.length > 1 && (selectedPoint = ponto.id)"
         >
-          <div class="flex items-start justify-between gap-8">
-            <div class="flex-1">
-              <div
-                :class="
-                  client.pontos?.length > 1
-                    ? 'grid grid-cols-1 lg:grid-cols-2 gap-4'
-                    : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4'
-                "
-              >
-                <div>
-                  <p class="text-sm text-gray-500">Endereço</p>
-                  <span v-if="ponto.endereco.tipoEndereco === 'URBANO'">
-                    <p class="font-medium">
-                      {{ ponto.endereco.rua }}, {{ ponto.endereco.bairro }}
-                    </p>
-                    <p class="text-sm text-gray-400">
-                      {{ ponto.endereco.complemento }}
-                    </p>
-                    <p class="text-sm text-gray-400">
-                      {{ ponto.endereco.cidade }} - CEP:
-                      {{ ponto.endereco.cep }}
-                    </p>
-                  </span>
-                  <span v-else>
-                    <p class="font-medium">
-                      {{ ponto.endereco.nomeLocal }} -
-                      {{ ponto.endereco.cidadeReferencia }}
-                    </p>
-                    <p class="text-sm text-gray-400">
-                      {{ ponto.endereco.complemento }}
-                    </p>
-                  </span>
-                </div>
-
-                <div :class="{ 'xl:mx-auto': client.pontos?.length === 1 }">
-                  <p class="text-sm text-gray-500">Vencimento</p>
-                  <p class="font-medium">Dia {{ ponto.diaVencimento }}</p>
-                </div>
-
-                <div :class="{ 'xl:mx-auto': client.pontos?.length === 1 }">
-                  <p class="text-sm text-gray-500">Plano</p>
+          <template #header>
+            <div class="flex justify-between gap-4 items-start">
+              <div>
+                <span v-if="ponto.endereco.tipoEndereco === 'URBANO'">
+                  <p class="font-bold">
+                    {{ ponto.endereco.rua }}, {{ ponto.endereco.numero }} -
+                    {{ ponto.endereco.bairro }}
+                  </p>
+                  <p class="text-sm text-muted">
+                    {{ ponto.endereco.complemento }}
+                  </p>
+                  <p class="text-sm text-muted">
+                    {{ ponto.endereco.cep }} •
+                    {{ ponto.endereco.cidade }}
+                  </p>
+                </span>
+                <span v-else>
                   <p class="font-medium">
-                    {{ ponto.plano.nome }}
+                    {{ ponto.endereco.nomeLocal }} -
+                    {{ ponto.endereco.cidadeReferencia }}
                   </p>
                   <p class="text-sm text-gray-400">
-                    Down/Up: {{ ponto.plano.downloadMB }}M/{{
-                      ponto.plano.uploadMB
-                    }}M
+                    {{ ponto.endereco.complemento }}
                   </p>
-                </div>
+                </span>
+              </div>
 
-                <div :class="{ 'xl:mx-auto': client.pontos?.length === 1 }">
-                  <p class="text-sm text-gray-500">Login Microtik</p>
-                  <p class="font-medium">
-                    {{ ponto.loginMK }}
-                  </p>
-                </div>
-
-                <div :class="{ 'xl:mx-auto': client.pontos?.length === 1 }">
-                  <p class="text-sm text-gray-500">Situação</p>
-                  <UBadge
-                    :color="STATUS_POINT[ponto.status]?.color"
-                    variant="subtle"
-                    size="lg"
-                    class="mt-1.5"
-                  >
-                    {{ STATUS_POINT[ponto.status]?.label }}
-                  </UBadge>
-                </div>
+              <div class="flex items-center gap-3">
+                <UBadge
+                  :color="STATUS_POINT[ponto.status]?.color"
+                  variant="subtle"
+                >
+                  {{ STATUS_POINT[ponto.status]?.label }}
+                </UBadge>
+                <UDropdownMenu :items="getPontoActions(ponto)">
+                  <UButton
+                    icon="i-heroicons-ellipsis-vertical"
+                    color="neutral"
+                    variant="ghost"
+                  />
+                </UDropdownMenu>
               </div>
             </div>
+          </template>
 
-            <UDropdownMenu :items="getPontoActions(ponto)">
-              <UButton
-                icon="i-heroicons-ellipsis-vertical"
-                color="neutral"
-                variant="ghost"
-              />
-            </UDropdownMenu>
-          </div>
+          <dl
+            class=""
+            :class="
+              client.pontos?.length > 1
+                ? 'grid grid-cols-1 xs:grid-cols-2 gap-4 sm:grid-cols-1 lg:grid-cols-2 '
+                : 'grid sm:grid-cols-2 lg:grid-cols-4 gap-4'
+            "
+          >
+            <div>
+              <dt
+                class="text-xs text-muted font-medium tracking-wide uppercase"
+              >
+                Plano
+              </dt>
+              <dd
+                class="font-medium py-2 px-4 bg-muted light:bg-accented rounded"
+              >
+                {{ ponto.plano.nome }}
+              </dd>
+              <dd class="text-muted text-sm">
+                ↓ {{ ponto.plano.downloadMB }}M ↑ {{ ponto.plano.uploadMB }}M
+              </dd>
+            </div>
+
+            <div>
+              <dt class="text-xs text-muted tracking-wide uppercase">
+                Vencimento todo dia
+              </dt>
+              <dd
+                class="font-medium py-2 px-4 bg-muted light:bg-accented rounded"
+              >
+                {{ ponto.diaVencimento }}
+              </dd>
+            </div>
+
+            <div>
+              <dt class="text-xs text-muted tracking-wide uppercase">
+                Último Pagamento
+              </dt>
+              <dd
+                class="font-medium py-2 px-4 bg-muted light:bg-accented rounded"
+              >
+                {{ ponto.diaUltimoPagamento }}
+              </dd>
+            </div>
+
+            <div>
+              <dt class="text-xs text-muted tracking-wide uppercase">
+                Login Microtik
+              </dt>
+              <dd
+                class="font-medium py-2 px-4 bg-muted light:bg-accented rounded"
+              >
+                {{ ponto.loginMK }}
+              </dd>
+            </div>
+          </dl>
         </UCard>
       </div>
 
