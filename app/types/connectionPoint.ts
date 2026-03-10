@@ -1,21 +1,17 @@
 import type { TPlan } from "./plan";
 
-export type TPontoConexaoStatus =
-  | "ATIVO"
-  | "REDUZIDO"
-  | "BLOQUEADO"
-  | "CANCELADO";
+type TPontoConexaoStatus = "ATIVO" | "REDUZIDO" | "BLOQUEADO" | "CANCELADO";
 
 export type TTipoEndereco = "URBANO" | "RURAL";
 
-export type TEnderecoBase = {
+type TEnderecoBase = {
   tipoEndereco: TTipoEndereco;
   latitude?: string;
   longitude?: string;
   complemento?: string;
 };
 
-export type TEnderecoUrbano = TEnderecoBase & {
+type TEnderecoUrbano = TEnderecoBase & {
   tipoEndereco: "URBANO";
   cep: string;
   cidade: string;
@@ -24,7 +20,7 @@ export type TEnderecoUrbano = TEnderecoBase & {
   numero: number;
 };
 
-export type TEnderecoRural = TEnderecoBase & {
+type TEnderecoRural = TEnderecoBase & {
   tipoEndereco: "RURAL";
   cidadeReferencia: string;
   nomeLocal: string;
@@ -41,6 +37,7 @@ export type TGetPontoConexao = {
   endereco: TEnderecoUrbano | TEnderecoRural;
 };
 
+// Criar/Editar Cliente
 export type TFormPontoConexao = {
   pontoId?: string;
   planoId: string;

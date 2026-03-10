@@ -1,13 +1,13 @@
 <template>
   <div class="bg-muted border border-accented rounded-lg p-4 space-y-6">
-    <UFormField label="CPF" name="cpf" required>
+    <UFormField label="CPF" name="cpf" :required="!isEditMode">
       <UInput
         v-model="model.cpf"
         class="w-full"
         size="lg"
         placeholder="xxx.xxx.xxx-xx"
         v-maska="'###.###.###-##'"
-        :disabled="isEditing"
+        :disabled="isEditMode"
       />
     </UFormField>
 
@@ -40,9 +40,10 @@
     </UFormField>
 
     <UFormField
+      v-if="!isEditMode"
       label="Senha de acesso ao portal do cliente"
       name="senhaCentralCliente"
-      :required="props.isEditing ? false : true"
+      required
     >
       <UInput
         v-model="model.senhaCentralCliente"
@@ -60,7 +61,7 @@ import type { TFormCliente } from "~/types/clients";
 
 const props = defineProps({
   modelValue: { type: Object as PropType<TFormCliente>, required: true },
-  isEditing: { type: Boolean, default: false },
+  isEditMode: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["update:modelValue"]);

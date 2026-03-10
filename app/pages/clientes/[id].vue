@@ -18,15 +18,57 @@
         </UBadge>
       </div>
 
-      <!-- editar informações base e  senha do portal do cliente-->
-      <!-- ativar/desativar cliente -->
-
-      <ClientEditPersonalInformation :client-to-edit="client" />
+      <UButton
+        :label="
+          client.status === 'ATIVO' ? 'Desativar Cliente' : 'Ativar Cliente'
+        "
+        variant="soft"
+        :color="client.status === 'ATIVO' ? 'error' : 'primary'"
+        @click="openDisableClient"
+      />
     </div>
 
+    <!--
+
+    1 - editar informações pessoais
+    2 - editar senha central do cliente
+    3 - ativar/desativar cliente // desativa os pontos ou nao permite enquanto tiver ponto ativo?
+
+    4 - adicionar ponto de conexão
+    5 - editar ponto de conexão (plano e endereço) || reusar componente de adicionar ponto de conexão (?)
+    6 - cancelar ponto de conexão
+    7 - liberar internet de ponto de conexão // se reduzido ou bloqueado
+
+    8 - visualizar suportes
+    9 - criar suporte
+    10 - imprimir suporte
+
+
+    11 - visualizar boletos
+    12 - gerar boletos
+    13 - imprimir boletos
+    -->
     <UCard variant="subtle">
       <template #header>
-        <h3 class="font-semibold">Informações Pessoais</h3>
+        <div class="flex justify-between items-center gap-4">
+          <h3 class="font-semibold">Informações Pessoais</h3>
+
+          <div class="flex gap-4 items-center">
+            <UButton
+              label="Alterar senha central do cliente"
+              variant="ghost"
+              icon="lucide:lock"
+              @click="openEditPassword"
+            />
+            <USeparator orientation="vertical" class="h-8" />
+            <UButton
+              icon="lucide:user-pen"
+              variant="ghost"
+              label="Editar Cliente"
+              @click="openEditPersonalInfo"
+            />
+          </div>
+        </div>
       </template>
       <dl class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <div>
@@ -54,9 +96,13 @@
           <span v-if="client.pontos?.length > 1">
             Pontos de Conexão ({{ client.pontos?.length }})
           </span>
-          <span v-else>Informações de assinatura</span>
+          <span v-else>Plano e Endereço</span>
         </h3>
-        <ClientEditAddConnectionPoint />
+        <UButton
+          icon="i-heroicons-plus"
+          label=" Adicionar Ponto"
+          @click="openAddConnectionPoint"
+        />
       </div>
 
       <div
@@ -115,7 +161,7 @@
                 >
                   {{ STATUS_POINT[ponto.status]?.label }}
                 </UBadge>
-                <UDropdownMenu :items="getPontoActions(ponto)">
+                <UDropdownMenu :items="getPointActions(ponto)">
                   <UButton
                     icon="i-heroicons-ellipsis-vertical"
                     color="neutral"
@@ -210,11 +256,12 @@
 </template>
 
 <script setup lang="ts">
-import ConnectionPointAddress from "~/components/Client/Edit/ConnectionPointAddress.vue";
-import ConnectionPointPlan from "~/components/Client/Edit/ConnectionPointPlan.vue";
+import ConnectionPoint from "~/components/Client/ConnectionPoint.vue";
+import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 import { clientesMock } from "~/mocks/clientes";
+import type { TClientUpdateFullForm } from "~/schema/client.update";
 import type { TGetCliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
 
@@ -241,36 +288,77 @@ const tabs = [
   },
 ];
 
-const getPontoActions = (ponto: TGetPontoConexao) => [
+const openDisableClient = () => {
+  // const modal = overlay.create(ConnectionPointPlan);
+  // modal.open({
+  //   clientToEdit: {
+  //     pontoId: ponto.id,
+  //     planoId: ponto.plano.id!,
+  //     diaVencimento: ponto.diaVencimento,
+  //     loginMK: ponto.loginMK,
+  //   },
+  // });
+};
+
+const openEditPassword = () => {
+  // const modal = overlay.create(ConnectionPointPlan);
+  // modal.open({
+  //   clientToEdit: {
+  //     pontoId: ponto.id,
+  //     planoId: ponto.plano.id!,
+  //     diaVencimento: ponto.diaVencimento,
+  //     loginMK: ponto.loginMK,
+  //   },
+  // });
+};
+
+const openEditPersonalInfo = () => {
+  const modal = overlay.create(EditPersonalInfo);
+  modal.open({
+    clientToEdit: client.value,
+    onUpdated: () => {
+      // refresh()
+    },
+  });
+};
+
+const openAddConnectionPoint = () => {
+  const modal = overlay.create(ConnectionPoint);
+  modal.open();
+};
+
+const getFormattedPoint = (point: TGetPontoConexao): TClientUpdateFullForm => {
+  const { plano, ...rest } = point;
+  return {
+    ponto: {
+      planoId: plano.id!,
+      ...rest,
+    },
+  };
+};
+
+const getPointActions = (ponto: TGetPontoConexao) => [
   [
     {
-      label: "Editar Plano",
-      icon: "i-heroicons-pencil",
+      label: "Editar Ponto",
+      icon: "lucide:pencil",
       onSelect: () => {
-        const modal = overlay.create(ConnectionPointPlan);
+        const modal = overlay.create(ConnectionPoint);
         modal.open({
-          clientToEdit: {
-            pontoId: ponto.id,
-            planoId: ponto.plano.id!,
-            diaVencimento: ponto.diaVencimento,
-            loginMK: ponto.loginMK,
-          },
+          pointToEdit: getFormattedPoint(ponto),
         });
       },
     },
     {
-      label: "Editar Endereço",
-      icon: "i-heroicons-map",
-      onSelect: () => {
-        const modal = overlay.create(ConnectionPointAddress);
-        modal.open({ clientToEdit: { pontoId: ponto.id, ...ponto.endereco } });
-      },
+      label: "Liberar Acesso", // somente se reduzido ou bloqueado
+      icon: "lucide:house-wifi",
+      onSelect: () => {},
     },
   ],
   [
     {
       label: "Cancelar Ponto",
-      icon: "i-heroicons-trash",
+      icon: "lucide:trash-2",
       onSelect: () => console.log("Cancelar ponto", ponto),
     },
   ],
