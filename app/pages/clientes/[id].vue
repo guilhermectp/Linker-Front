@@ -257,6 +257,7 @@
 
 <script setup lang="ts">
 import ConnectionPoint from "~/components/Client/ConnectionPoint.vue";
+import EditPassword from "~/components/Client/EditPassword.vue";
 import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
@@ -301,15 +302,10 @@ const openDisableClient = () => {
 };
 
 const openEditPassword = () => {
-  // const modal = overlay.create(ConnectionPointPlan);
-  // modal.open({
-  //   clientToEdit: {
-  //     pontoId: ponto.id,
-  //     planoId: ponto.plano.id!,
-  //     diaVencimento: ponto.diaVencimento,
-  //     loginMK: ponto.loginMK,
-  //   },
-  // });
+  const modal = overlay.create(EditPassword);
+  modal.open({
+    clientId: client.value.id,
+  });
 };
 
 const openEditPersonalInfo = () => {

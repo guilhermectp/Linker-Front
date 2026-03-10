@@ -1,9 +1,5 @@
 <template>
-  <UModal title="Editando Cliente" :dismissible="false">
-    <UButton icon="lucide:user-pen" color="neutral" variant="ghost">
-      Editar Cliente
-    </UButton>
-
+  <UModal title="Editando Cliente">
     <template #body="{ close }">
       <UForm
         :schema="clientUpdateInfoSchema"
