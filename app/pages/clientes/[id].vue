@@ -1,42 +1,32 @@
 <template>
   <div class="space-y-6">
     <!-- Header com ações -->
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <UButton
-          icon="i-heroicons-arrow-left"
-          color="neutral"
-          variant="ghost"
-          to="/clientes"
-        />
-        <h1 class="text-2xl font-medium">{{ client.nome }}</h1>
-        <UBadge
-          :color="client.status === 'ATIVO' ? 'primary' : 'neutral'"
-          size="lg"
-        >
-          {{ STATUS_CLIENT[client.status]?.label }}
-        </UBadge>
-      </div>
-
+    <div class="flex items-center justify-between gap-4">
+      <!-- <div class="flex items-center gap-4"> -->
       <UButton
-        :label="
-          client.status === 'ATIVO' ? 'Desativar Cliente' : 'Ativar Cliente'
-        "
-        variant="soft"
-        :color="client.status === 'ATIVO' ? 'error' : 'primary'"
-        @click="openDisableClient"
+        icon="i-heroicons-arrow-left"
+        color="neutral"
+        variant="ghost"
+        to="/clientes"
       />
+      <!-- <h1 class="text-2xl font-medium">{{ client.nome }}</h1> -->
+      <UBadge
+        :color="client.status === 'ATIVO' ? 'primary' : 'neutral'"
+        size="xl"
+      >
+        {{ STATUS_CLIENT[client.status]?.label }}
+      </UBadge>
+      <!-- </div> -->
     </div>
 
     <!--
 
     1 - editar informações pessoais
     2 - editar senha central do cliente
-    3 - ativar/desativar cliente // desativa os pontos ou nao permite enquanto tiver ponto ativo?
 
     4 - adicionar ponto de conexão
     5 - editar ponto de conexão (plano e endereço) || reusar componente de adicionar ponto de conexão (?)
-    6 - cancelar ponto de conexão
+    6 - cancelar/reativar ponto de conexão
     7 - liberar internet de ponto de conexão // se reduzido ou bloqueado
 
     8 - visualizar suportes
@@ -51,7 +41,7 @@
     <UCard variant="subtle">
       <template #header>
         <div class="flex justify-between items-center gap-4">
-          <h3 class="font-semibold">Informações Pessoais</h3>
+          <h3 class="font-semibold">Informações do Cliente</h3>
 
           <div class="flex gap-4 items-center">
             <UButton
@@ -90,20 +80,24 @@
       </dl>
     </UCard>
 
-    <div class="space-y-6">
-      <div class="flex justify-between items-center">
-        <h3 class="text-lg font-semibold">
-          <span v-if="client.pontos?.length > 1">
-            Pontos de Conexão ({{ client.pontos?.length }})
-          </span>
-          <span v-else>Plano e Endereço</span>
-        </h3>
-        <UButton
-          icon="i-heroicons-plus"
-          label=" Adicionar Ponto"
-          @click="openAddConnectionPoint"
-        />
-      </div>
+    <UCard variant="subtle">
+      <template #header>
+        <div class="flex justify-between items-center gap-4">
+          <h3 class="font-semibold">
+            <span v-if="client.pontos?.length > 1">
+              Pontos de Conexão ({{ client.pontos?.length }})
+            </span>
+            <span v-else>Plano e Endereço</span>
+          </h3>
+
+          <UButton
+            icon="i-heroicons-plus"
+            variant="ghost"
+            label=" Adicionar Ponto"
+            @click="openAddConnectionPoint"
+          />
+        </div>
+      </template>
 
       <div
         :class="
@@ -231,6 +225,21 @@
           </dl>
         </UCard>
       </div>
+    </UCard>
+
+    <UCard variant="subtle">
+      <template #header>
+        <div class="flex justify-between items-center gap-4">
+          <h3 class="font-semibold">Boletos e Suportes</h3>
+
+          <UButton
+            icon="i-heroicons-plus"
+            variant="ghost"
+            label="Gerar Boleto"
+            @click="openAddConnectionPoint"
+          />
+        </div>
+      </template>
 
       <UTabs v-model="selectedTab" :items="tabs">
         <template #boletos>
@@ -251,7 +260,7 @@
           </div>
         </template>
       </UTabs>
-    </div>
+    </UCard>
   </div>
 </template>
 
@@ -260,7 +269,10 @@ import ConnectionPoint from "~/components/Client/ConnectionPoint.vue";
 import EditPassword from "~/components/Client/EditPassword.vue";
 import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
-import { STATUS_POINT } from "~/constants/enumConnectionPoint";
+import {
+  ENUM_STATUS_POINT,
+  STATUS_POINT,
+} from "~/constants/enumConnectionPoint";
 import { clientesMock } from "~/mocks/clientes";
 import type { TClientUpdateFullForm } from "~/schema/client.update";
 import type { TGetCliente } from "~/types/clients";
@@ -288,18 +300,6 @@ const tabs = [
     icon: "i-heroicons-chat-bubble-left-right",
   },
 ];
-
-const openDisableClient = () => {
-  // const modal = overlay.create(ConnectionPointPlan);
-  // modal.open({
-  //   clientToEdit: {
-  //     pontoId: ponto.id,
-  //     planoId: ponto.plano.id!,
-  //     diaVencimento: ponto.diaVencimento,
-  //     loginMK: ponto.loginMK,
-  //   },
-  // });
-};
 
 const openEditPassword = () => {
   const modal = overlay.create(EditPassword);
@@ -333,8 +333,10 @@ const getFormattedPoint = (point: TGetPontoConexao): TClientUpdateFullForm => {
   };
 };
 
-const getPointActions = (ponto: TGetPontoConexao) => [
-  [
+const getPointActions = (ponto: TGetPontoConexao) => {
+  const actions: any[] = [];
+
+  const mainActions = [
     {
       label: "Editar Ponto",
       icon: "lucide:pencil",
@@ -345,20 +347,49 @@ const getPointActions = (ponto: TGetPontoConexao) => [
         });
       },
     },
-    {
-      label: "Liberar Acesso", // somente se reduzido ou bloqueado
+  ];
+
+  if (
+    ponto.status === ENUM_STATUS_POINT.REDUZIDO ||
+    ponto.status === ENUM_STATUS_POINT.BLOQUEADO
+  ) {
+    mainActions.push({
+      label: "Liberar Acesso",
       icon: "lucide:house-wifi",
-      onSelect: () => {},
-    },
-  ],
-  [
-    {
+      onSelect: () => {
+        console.log("Liberar acesso", ponto);
+      },
+    });
+  }
+
+  actions.push(mainActions);
+
+  const secondaryActions = [];
+
+  if (ponto.status !== ENUM_STATUS_POINT.CANCELADO) {
+    secondaryActions.push({
       label: "Cancelar Ponto",
       icon: "lucide:trash-2",
-      onSelect: () => console.log("Cancelar ponto", ponto),
-    },
-  ],
-];
+      onSelect: () => {
+        console.log("Cancelar ponto", ponto);
+      },
+    });
+  }
+
+  if (ponto.status === ENUM_STATUS_POINT.CANCELADO) {
+    secondaryActions.push({
+      label: "Reativar Ponto",
+      icon: "lucide:rotate-ccw",
+      onSelect: () => {
+        console.log("Reativar ponto", ponto);
+      },
+    });
+  }
+
+  if (secondaryActions.length) actions.push(secondaryActions);
+
+  return actions;
+};
 
 const formatCPF = (cpf: string) => {
   if (!cpf) return "";
