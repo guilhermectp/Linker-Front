@@ -1,19 +1,14 @@
-type BadgeColor =
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "info"
-  | "warning"
-  | "error";
+import type { TStatusConfig } from "~/types/badgeColors";
+import type { TPontoConexaoStatus } from "~/types/connectionPoint";
 
-type StatusConfig = {
-  label: string;
-  color: BadgeColor;
-  short: string;
+export const ENUM_STATUS_POINT: Record<TPontoConexaoStatus, string> = {
+  ATIVO: "ATIVO",
+  REDUZIDO: "REDUZIDO",
+  BLOQUEADO: "BLOQUEADO",
+  CANCELADO: "CANCELADO",
 };
 
-export const STATUS_POINT: Record<string, StatusConfig> = {
+export const STATUS_POINT: Record<TPontoConexaoStatus, TStatusConfig> = {
   ATIVO: {
     label: "Ativo",
     color: "primary",

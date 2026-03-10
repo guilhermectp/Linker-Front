@@ -1,16 +1,22 @@
-type BadgeColor = "neutral" | "primary";
+import type { TStatusConfig } from "~/types/badgeColors";
+import type { TClienteStatus } from "~/types/clients";
 
-type StatusConfig = {
-  label: string;
-  color: BadgeColor;
+export const ENUM_STATUS_CLIENT: Record<TClienteStatus, string> = {
+  ATIVO: "ATIVO",
+  SUSPENSO: "SUSPENSO",
+  INATIVO: "INATIVO",
 };
 
-export const STATUS_CLIENT: Record<string, StatusConfig> = {
+export const STATUS_CLIENT: Record<TClienteStatus, TStatusConfig> = {
   ATIVO: {
     label: "Ativo",
     color: "primary",
   },
-  DESATIVADO: {
+  SUSPENSO: {
+    label: "Suspenso",
+    color: "warning",
+  },
+  INATIVO: {
     label: "Desativado",
     color: "neutral",
   },

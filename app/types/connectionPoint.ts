@@ -1,6 +1,10 @@
 import type { TPlan } from "./plan";
 
-type TPontoConexaoStatus = "ATIVO" | "REDUZIDO" | "BLOQUEADO" | "CANCELADO";
+export type TPontoConexaoStatus =
+  | "ATIVO"
+  | "REDUZIDO"
+  | "BLOQUEADO"
+  | "CANCELADO";
 
 export type TTipoEndereco = "URBANO" | "RURAL";
 

@@ -1,6 +1,6 @@
 import type { TGetPontoConexao } from "./connectionPoint";
 
-export type TClientStatus = "ATIVO" | "DESATIVADO";
+export type TClienteStatus = "ATIVO" | "SUSPENSO" | "INATIVO";
 
 export type TGetCliente = {
   id: string;
@@ -9,7 +9,7 @@ export type TGetCliente = {
   email: string;
   telefone: string;
   senhaCentralCliente: string;
-  status: TClientStatus;
+  status: TClienteStatus;
   pontos: TGetPontoConexao[];
 };
 
