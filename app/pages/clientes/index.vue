@@ -37,7 +37,7 @@
       ref="table"
       v-model:pagination="pagination"
       v-model:global-filter="nameOrUsernameFilter"
-      :data="clientesMock"
+      :data="data"
       :loading="status === 'pending'"
       :columns="columns"
       :empty="emptyMessage"
@@ -66,7 +66,6 @@
 import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { SelectItem, TableColumn } from "@nuxt/ui";
 import type { TGetCliente } from "~/types/clients";
-import { clientesMock } from "~/mocks/clientes";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 
@@ -106,9 +105,7 @@ const { data, status, error, refresh } = await asyncFetch<any>(
 );
 
 const emptyMessage = computed(() => {
-  if (status.value === "error" && error) return getErrorMessageApi(error.value);
-
-  return "Nenhum cliente encontrado";
+  if (status.value === "error" && error) return getErrorMessage(error.value);
 });
 
 const table = useTemplateRef("table");
@@ -159,7 +156,7 @@ const columns: TableColumn<TGetCliente>[] = [
         "div",
         { class: "flex gap-1" },
         pontos.map((ponto) => {
-          if (row.original.status === "DESATIVADO") return;
+          if (row.original.status === "SUSPENSO") return;
 
           const status = STATUS_POINT[ponto.status];
 
