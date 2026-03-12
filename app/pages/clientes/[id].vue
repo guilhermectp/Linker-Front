@@ -227,40 +227,20 @@
       </div>
     </UCard>
 
-    <UCard variant="subtle">
-      <template #header>
-        <div class="flex justify-between items-center gap-4">
-          <h3 class="font-semibold">Boletos e Suportes</h3>
-
-          <UButton
-            icon="i-heroicons-plus"
-            variant="ghost"
-            label="Gerar Boleto"
-            @click="openAddConnectionPoint"
-          />
-        </div>
+    <!-- <UTabs v-model="selectedTab" :items="tabs">
+      <template #boletos>
+        <ClientInvoiceList />
       </template>
 
-      <UTabs v-model="selectedTab" :items="tabs">
-        <template #boletos>
-          <div class="py-6">
-            <p class="text-gray-500">
-              {{ selectedPoint }}
-              Listagem de boletos em desenvolvimento...
-            </p>
-          </div>
-        </template>
+      <template #suporte>
+        <ClientServiceOrderList />
+      </template>
+    </UTabs> -->
 
-        <template #suporte>
-          <div class="py-6">
-            <p class="text-gray-500">
-              {{ selectedPoint }}
-              Tickets de suporte em desenvolvimento...
-            </p>
-          </div>
-        </template>
-      </UTabs>
-    </UCard>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <ClientInvoiceList />
+      <ClientServiceOrderList />
+    </div>
   </div>
 </template>
 
@@ -294,7 +274,7 @@ const tabs = [
     icon: "i-heroicons-currency-dollar",
   },
   {
-    label: "Suporte",
+    label: "Ordens de Serviço",
     value: "suporte",
     slot: "suporte",
     icon: "i-heroicons-chat-bubble-left-right",
