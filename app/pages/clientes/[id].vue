@@ -1,43 +1,20 @@
 <template>
   <div class="space-y-6">
-    <!-- Header com ações -->
     <div class="flex items-center justify-between gap-4">
-      <!-- <div class="flex items-center gap-4"> -->
       <UButton
         icon="i-heroicons-arrow-left"
         color="neutral"
         variant="ghost"
         to="/clientes"
       />
-      <!-- <h1 class="text-2xl font-medium">{{ client.nome }}</h1> -->
       <UBadge
         :color="client.status === 'ATIVO' ? 'primary' : 'neutral'"
         size="xl"
       >
         {{ STATUS_CLIENT[client.status]?.label }}
       </UBadge>
-      <!-- </div> -->
     </div>
 
-    <!--
-
-    1 - editar informações pessoais
-    2 - editar senha central do cliente
-
-    4 - adicionar ponto de conexão
-    5 - editar ponto de conexão (plano e endereço) || reusar componente de adicionar ponto de conexão (?)
-    6 - cancelar/reativar ponto de conexão
-    7 - liberar internet de ponto de conexão // se reduzido ou bloqueado
-
-    8 - visualizar suportes
-    9 - criar suporte
-    10 - imprimir suporte
-
-
-    11 - visualizar boletos
-    12 - gerar boletos
-    13 - imprimir boletos
-    -->
     <UCard variant="subtle">
       <template #header>
         <div class="flex justify-between items-center gap-4">

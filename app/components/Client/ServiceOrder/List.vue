@@ -74,10 +74,16 @@
           </div>
 
           <div
-            class="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity"
+            class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <UButton variant="ghost" icon="lucide:pencil" />
-            <UButton variant="ghost" color="error" icon="lucide:trash-2" />
+            <UButton variant="ghost" size="sm" icon="lucide:printer" />
+            <UButton variant="ghost" size="sm" icon="lucide:pencil" />
+            <UButton
+              variant="ghost"
+              size="sm"
+              color="error"
+              icon="lucide:trash-2"
+            />
           </div>
         </div>
       </li>
