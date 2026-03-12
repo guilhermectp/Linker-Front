@@ -31,7 +31,7 @@
         <div class="flex items-start justify-between gap-4 min-w-0">
           <div class="flex items-start gap-3 min-w-0 flex-1">
             <div
-              class="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center mt-0.5"
+              class="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
               :class="typeConfig[order.tipo].bg"
             >
               <UIcon

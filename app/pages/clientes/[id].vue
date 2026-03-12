@@ -227,16 +227,6 @@
       </div>
     </UCard>
 
-    <!-- <UTabs v-model="selectedTab" :items="tabs">
-      <template #boletos>
-        <ClientInvoiceList />
-      </template>
-
-      <template #suporte>
-        <ClientServiceOrderList />
-      </template>
-    </UTabs> -->
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <ClientInvoiceList />
       <ClientServiceOrderList />
