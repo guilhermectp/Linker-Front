@@ -1,5 +1,6 @@
 import type { AsyncDataOptions } from "#app";
 import type { NitroFetchOptions, AvailableRouterMethod } from "nitropack";
+import type { TErrorApi } from "~/types/requestError";
 
 type ApiAsyncOptions<T> = AsyncDataOptions<T> &
   Omit<
@@ -74,15 +75,10 @@ export const useApi = () => {
       );
 
       return { data, error: null };
-    } catch (err: any) {
+    } catch (error: any) {
       return {
         data: null,
-        error: {
-          status: err?.response?.status,
-          statusText: err?.response?.statusText,
-          message: err?.data?.message || err?.message || "Erro desconhecido",
-          raw: err,
-        },
+        error: error as TErrorApi,
       };
     }
   };

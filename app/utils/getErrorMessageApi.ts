@@ -1,8 +1,15 @@
-export const getErrorMessageApi = (error: any) => {
-  const errorMessage =
-    (error?.status || error?.statusCode) && error?.message
-      ? `${error?.status || error?.statusCode} - ${error?.message}`
-      : error?.message || "Erro desconhecido";
+import type { TErrorApi } from "~/types/requestError";
 
-  return errorMessage;
+export const getErrorMessageApi = (error: TErrorApi | any) => {
+  return getErrorStatus(error)
+    ? `${getErrorStatus(error)} - ${getErrorMessage(error)}`
+    : getErrorMessage(error);
+};
+
+export const getErrorStatus = (error: any) => {
+  return error?.data?.statusCode ?? error?.statusCode ?? error?.status;
+};
+
+export const getErrorMessage = (error: any) => {
+  return error?.data?.message ?? error?.message ?? "Erro desconhecido";
 };
