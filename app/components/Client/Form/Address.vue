@@ -61,11 +61,19 @@
       </UFormField>
 
       <UFormField label="Latitude" name="ponto.endereco.latitude">
-        <UInput v-model="model.latitude" class="w-full" />
+        <UInputNumber
+          v-model="model.latitude"
+          :increment="false"
+          :decrement="false"
+        />
       </UFormField>
 
       <UFormField label="Longitude" name="ponto.endereco.longitude">
-        <UInput v-model="model.longitude" class="w-full" />
+        <UInputNumber
+          v-model="model.longitude"
+          :increment="false"
+          :decrement="false"
+        />
       </UFormField>
     </div>
   </div>
@@ -103,8 +111,8 @@ const createUrbanAddress = () => ({
   rua: "",
   numero: 0,
   complemento: "",
-  latitude: "",
-  longitude: "",
+  latitude: undefined,
+  longitude: undefined,
 });
 
 const createRuralAddress = () => ({
@@ -112,8 +120,8 @@ const createRuralAddress = () => ({
   cidadeReferencia: "",
   nomeLocal: "",
   complemento: "",
-  latitude: "",
-  longitude: "",
+  latitude: undefined,
+  longitude: undefined,
 });
 
 const toggleAddressType = (tipo: TTipoEndereco) => {

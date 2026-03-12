@@ -10,8 +10,8 @@ export type TTipoEndereco = "URBANO" | "RURAL";
 
 type TEnderecoBase = {
   tipoEndereco: TTipoEndereco;
-  latitude?: string;
-  longitude?: string;
+  latitude?: number;
+  longitude?: number;
   complemento?: string;
 };
 

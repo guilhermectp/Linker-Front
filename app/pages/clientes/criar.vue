@@ -66,10 +66,8 @@ const state = reactive<TClientCreate>({
       rua: "",
       numero: 0,
       complemento: "",
-      latitude: "",
-      longitude: "",
-      // cidadeReferencia: "",
-      // nomeLocal: "",
+      latitude: undefined,
+      longitude: undefined,
     },
   },
 });
@@ -131,7 +129,25 @@ const onSubmit = async () => {
     return;
   }
 
-  console.log(state);
+  const { fetchApi } = useApi();
+
+  const { error } = await fetchApi(`/clientes`, {
+    method: "POST",
+    body: state,
+  });
+
+  if (error) {
+    toast.add({
+      description: `${error.status} - ${error.message}`,
+      color: "error",
+    });
+    return;
+  }
+
+  toast.add({
+    description: `Cliente cadastrado com sucesso`,
+    color: "success",
+  });
 };
 </script>
 
