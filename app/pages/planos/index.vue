@@ -66,15 +66,13 @@ const pagination = ref({
 
 const globalFilter = ref("");
 
-const { asyncFetch } = useApi();
-
 const { data, status, error, refresh } = await asyncFetch<any>(
   `plans-fetch-all-page`,
   "/planos",
 );
 
 const emptyMessage = computed(() => {
-  if (status.value === "error" && error) return getErrorMessageApi(error.value);
+  if (status.value === "error" && error) return getErrorMessage(error.value);
 
   return "Nenhum plano encontrado";
 });
@@ -173,20 +171,22 @@ const getRowItems = (row: Row<TPlan>) => {
 
 const openFormModalToCreate = () => {
   const modal = overlay.create(PlanFormModal);
-  modal.open();
+  modal.open({ onRefresh: async () => await refresh() });
 };
 
-const openFormModalToEdit = (plan?: TPlan) => {
-  const modal = overlay.create(PlanFormModal, {
-    props: { plan },
+const openFormModalToEdit = (plan: TPlan) => {
+  const modal = overlay.create(PlanFormModal);
+  modal.open({
+    plan: plan,
+    onRefresh: async () => await refresh(),
   });
-  modal.open();
 };
 
 const openDeleteModal = (plan: TPlan) => {
-  const modal = overlay.create(PlanDeleteModal, {
-    props: { plan },
+  const modal = overlay.create(PlanDeleteModal);
+  modal.open({
+    plan: plan,
+    onRefresh: async () => await refresh(),
   });
-  modal.open();
 };
 </script>

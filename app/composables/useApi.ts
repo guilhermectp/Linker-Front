@@ -1,38 +1,78 @@
-import type { AsyncDataOptions } from "#app";
-import type { NitroFetchOptions, AvailableRouterMethod } from "nitropack";
-import type { TErrorApi } from "~/types/requestError";
+import type { NitroFetchOptions } from "nitropack";
+import type {
+  TApiOptions,
+  TAsyncApiOptions,
+  TRequestError,
+} from "~/types/requests";
 
-type ApiAsyncOptions<T> = AsyncDataOptions<T> &
-  Omit<
-    NitroFetchOptions<any, AvailableRouterMethod<any>>,
-    "onRequest" | "onResponse" | "onResponseError" | "onRequestError"
-  >;
-// Omite os interceptors para decidir tratar eles globalmente no useApi
-
-export const useApi = () => {
+const getFetchOptions = (customOptions: NitroFetchOptions<any>) => {
   const config = useRuntimeConfig();
   const token = useCookie("access_token");
   const baseURL = config.public.API_BASE;
 
-  const getFetchOptions = (customOptions: NitroFetchOptions<any>) => {
-    const { baseURL: customBaseURL, ...rest } = customOptions;
-    return {
-      baseURL: customBaseURL ?? baseURL,
-      headers: {
-        ...(token.value && { Authorization: `Bearer ${token.value}` }),
-        "Content-Type": "application/json",
-        ...rest.headers,
-      },
-      ...rest,
-    };
+  const { baseURL: customBaseURL, ...rest } = customOptions;
+
+  return {
+    baseURL: customBaseURL ?? baseURL,
+    headers: {
+      ...(token.value && { Authorization: `Bearer ${token.value}` }),
+      "Content-Type": "application/json",
+      ...rest.headers,
+    },
+    ...rest,
+  };
+};
+
+export const asyncFetch = <T = unknown>(
+  key: MaybeRefOrGetter<string>,
+  path: string,
+  options: TAsyncApiOptions<T> = {},
+) => {
+  const canFetch = () => {
+    const required = toValue(options.requiredFilters) ?? [];
+
+    return required.every((key: string) => {
+      const val = toValue(options.query?.[key]);
+      return val !== undefined && val !== null && val !== "";
+    });
   };
 
-  const asyncFetch = <T = unknown, E = unknown>(
-    key: string,
-    path: string,
-    options: ApiAsyncOptions<T> = {},
-  ) => {
-    const {
+  const {
+    server,
+    lazy,
+    immediate,
+    deep,
+    dedupe,
+    default: defaultData,
+    transform,
+    pick,
+    watch,
+    getCachedData,
+    ...fetchOptions
+  } = options;
+
+  return useAsyncData<T, TRequestError>(
+    key,
+    (): Promise<T> => {
+      if (!canFetch()) {
+        return Promise.resolve(null as T);
+      }
+
+      const { query, ...resolvedOptions } = toValue(fetchOptions);
+
+      const resolvedQuery: Record<string, any> = {};
+      if (query) {
+        for (const key in query) {
+          resolvedQuery[key] = toValue(query[key]);
+        }
+      }
+
+      return $fetch<T>(
+        path,
+        getFetchOptions({ ...resolvedOptions, query: resolvedQuery }),
+      ) as Promise<T>;
+    },
+    {
       server,
       lazy,
       immediate,
@@ -43,45 +83,13 @@ export const useApi = () => {
       pick,
       watch,
       getCachedData,
-      ...fetchOptions
-    } = options;
+    },
+  );
+};
 
-    return useAsyncData<T, E>(
-      key,
-      () => $fetch<T>(path, getFetchOptions(fetchOptions)),
-      {
-        server,
-        lazy,
-        immediate,
-        deep,
-        dedupe,
-        default: defaultData,
-        transform,
-        pick,
-        watch,
-        getCachedData,
-      },
-    );
-  };
-
-  const fetchApi = async <T = unknown>(
-    path: string,
-    options: NitroFetchOptions<any>,
-  ): Promise<{ data: T | null; error: any | null }> => {
-    try {
-      const data = await $fetch<T>(
-        path,
-        getFetchOptions({ method: "GET", ...options }),
-      );
-
-      return { data, error: null };
-    } catch (error: any) {
-      return {
-        data: null,
-        error: error as TErrorApi,
-      };
-    }
-  };
-
-  return { asyncFetch, fetchApi };
+export const apiFetch = async <T = unknown>(
+  path: string,
+  options: TApiOptions = {},
+): Promise<T> => {
+  return $fetch<T>(path, getFetchOptions(options)) as Promise<T>;
 };

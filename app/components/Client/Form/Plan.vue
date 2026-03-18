@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import type { TFormPontoConexao } from "~/types/connectionPoint";
 import type { TPlan } from "~/types/plan";
-const { asyncFetch } = useApi();
 
 const props = defineProps({
   modelValue: { type: Object as PropType<TFormPontoConexao>, required: true },

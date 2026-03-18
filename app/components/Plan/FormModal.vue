@@ -2,10 +2,10 @@
   <UModal title="Criando novo plano" :dismissible="false">
     <template #body="{ close }">
       <UForm
-        :schema="schema"
+        :schema="activeSchema"
         :state="state"
         class="space-y-6"
-        @submit="onSubmit"
+        @submit="onSubmit(close)"
       >
         <UFormField label="Nome do Plano" name="nome" required>
           <UInput v-model="state.nome" class="w-full" />
@@ -60,7 +60,7 @@
             variant="ghost"
             @click="close"
           />
-          <UButton type="submit" label="Criar" />
+          <UButton type="submit" :label="btnLabel" />
         </div>
       </UForm>
     </template>
@@ -68,33 +68,27 @@
 </template>
 
 <script setup lang="ts">
-import * as z from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
 import type { TPlan } from "~/types/plan";
-const { fetchApi } = useApi();
+import { planService } from "~/services/plan";
+import {
+  planCreateSchema,
+  planUpdateSchema,
+  type TPlanCreate,
+  type TPlanUpdate,
+} from "~/schema/plan.create";
 const toast = useToast();
 
-const schema = z.object({
-  nome: z
-    .string("Nome do plano é obrigatório")
-    .min(5, "Precisa ter ao menos 10 caracteres"),
-  uploadMB: z
-    .number("Velocidade de Upload é obrigatório")
-    .min(1, "Precisa ter ao menos 1 MB"),
-  downloadMB: z
-    .number("Velocidade de Download é obrigatório")
-    .min(1, "Precisa ter ao menos 1 MB"),
-  descricao: z.string().optional(),
-  valor: z.number("Valor é obrigatório").min(0, "Precisa ser ao menos 0"),
-});
+const emit = defineEmits(["refresh"]);
 
-type Schema = z.output<typeof schema>;
+const activeSchema = computed(() =>
+  props.plan ? planUpdateSchema : planCreateSchema,
+);
 
-const state = reactive<Partial<Schema>>({
-  nome: undefined,
+const state = reactive<Partial<TPlanCreate>>({
+  nome: "",
   uploadMB: 0,
   downloadMB: 0,
-  descricao: undefined,
+  descricao: "",
   valor: 0,
 });
 
@@ -102,34 +96,69 @@ const props = defineProps<{
   plan?: TPlan;
 }>();
 
-const onSubmit = (event: FormSubmitEvent<Schema>) => {
-  if (props.plan) {
-    submitPlan("PUT", event.data);
-  } else {
-    submitPlan("POST", event.data);
+const isLoading = ref<boolean>(false);
+
+const isEditing = computed(() => props.plan);
+
+const btnLabel = computed(() => (isEditing.value ? "Salvar" : "Criar"));
+
+const onSubmit = async (close: () => void) => {
+  try {
+    isLoading.value = true;
+
+    if (props.plan) {
+      const updateData = state as TPlanUpdate;
+      const body = getUpdateBody(updateData);
+
+      if (body && Object.keys(body).length > 0) {
+        await planService.update(props.plan.nome, body);
+      } else {
+        toast.add({
+          description: "Nenhuma alteração detectada",
+          color: "warning",
+        });
+        return;
+      }
+    } else {
+      await planService.create(state as TPlanCreate);
+    }
+
+    toast.add({
+      description: props.plan
+        ? "Plano atualizado com sucesso"
+        : "Plano criado com sucesso",
+      color: "success",
+    });
+
+    emit("refresh");
+    close();
+  } catch (error) {
+    toast.add({
+      description: getErrorMessage(error),
+      color: "error",
+    });
+  } finally {
+    isLoading.value = false;
   }
 };
 
-const submitPlan = async (typeRequest: "POST" | "PUT", plan: TPlan) => {
-  const { error } = await fetchApi(`/planos`, {
-    method: typeRequest,
-    body: plan,
-  });
+const getUpdateBody = (data: TPlanUpdate) => {
+  const original = props.plan;
 
-  if (error) {
-    toast.add({
-      description: `${error.status} - ${error.message}`,
-      color: "error",
-    });
-    return;
-  }
+  if (!original) return {};
 
-  const typeMessage = typeRequest === "POST" ? "criado" : "atualizado";
+  const payload: Partial<TPlanUpdate> = {};
 
-  toast.add({
-    description: `Plano ${typeMessage} com sucesso`,
-    color: "success",
-  });
+  if (data.nome !== original.nome) payload.nome = data.nome;
+  if (data.uploadMB !== original.uploadMB) payload.uploadMB = data.uploadMB;
+  if (data.downloadMB !== original.downloadMB)
+    payload.downloadMB = data.downloadMB;
+  if (data.valor !== original.valor) payload.valor = data.valor;
+  if (data.descricao !== original.descricao) payload.descricao = data.descricao;
+
+  if (Object.keys(payload).length === 0) return;
+
+  return payload;
 };
 
 watch(
