@@ -20,16 +20,16 @@
       v-model:global-filter="globalFilter"
       :data="data"
       :loading="status === 'pending'"
-      :columns="columns"
       :empty="emptyMessage"
+      :columns="columns"
       :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }"
-      class="flex-1"
       :ui="{
         root: 'shadow-sm border border-accented rounded',
         tr: 'hover:light:bg-elevated hover:dark:bg-elevated/50 transition-all',
       }"
+      class="flex-1"
     />
 
     <div class="flex justify-center pt-4 px-4">

@@ -13,12 +13,14 @@
           color="neutral"
           variant="ghost"
           @click="close"
+          :disabled="isLoading"
         />
 
         <UButton
           label="Deletar Plano"
           color="error"
           @click="deletePlan(close)"
+          :loading="isLoading"
         />
       </div>
     </template>

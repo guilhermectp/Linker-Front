@@ -6,6 +6,7 @@
         :state="state"
         class="space-y-6"
         @submit="onSubmit(close)"
+        :disabled="isLoading"
       >
         <UFormField label="Nome do Plano" name="nome" required>
           <UInput v-model="state.nome" class="w-full" />
@@ -60,7 +61,7 @@
             variant="ghost"
             @click="close"
           />
-          <UButton type="submit" :label="btnLabel" />
+          <UButton type="submit" :label="btnLabel" :loading="isLoading" />
         </div>
       </UForm>
     </template>
