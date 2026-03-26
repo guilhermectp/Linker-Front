@@ -1,10 +1,15 @@
 <template>
   <UApp :locale="pt_br">
-    <UHeader>
+    <UHeader mode="slideover" class="bg-white dark:bg-default">
       <template #left>
         <NuxtLink to="/"> Linker </NuxtLink>
-        <UNavigationMenu :items="items" class="w-full justify-center" />
       </template>
+
+      <UNavigationMenu
+        :items="items"
+        class="w-full justify-center"
+        variant="link"
+      />
 
       <template #right>
         <UColorModeButton />
@@ -16,6 +21,14 @@
           aria-label="GitHub"
           color="neutral"
           variant="ghost"
+        />
+      </template>
+
+      <template #body>
+        <UNavigationMenu
+          :items="items"
+          class="w-full justify-center"
+          orientation="vertical"
         />
       </template>
     </UHeader>
@@ -57,13 +70,13 @@ useHead({
   meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
   link: [{ rel: "icon", href: "/favicon.ico" }],
   htmlAttrs: {
-    lang: "en",
+    lang: "pt_Br",
   },
 });
 
-const title = "Nuxt Starter Template";
+const title = "Linker";
 const description =
-  "A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.";
+  "Um sistema baseado no MK-Auth atuando de forma mais simples performática.";
 
 useSeoMeta({
   title,

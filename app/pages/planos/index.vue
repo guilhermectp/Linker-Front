@@ -1,50 +1,66 @@
 <template>
   <div class="space-y-8">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center gap-4">
       <UInput
         v-model="globalFilter"
         placeholder="Buscar por nome, descrição ou valor"
-        class="w-1/4"
+        class="w-full"
         size="lg"
       />
+
+      <UFieldGroup size="lg">
+        <UButton
+          color="neutral"
+          :variant="currentView === 'table' ? 'subtle' : 'outline'"
+          icon="lucide:table"
+          @click="currentView = 'table'"
+        />
+        <UButton
+          color="neutral"
+          :variant="currentView === 'cards' ? 'subtle' : 'outline'"
+          icon="lucide:layout-grid"
+          @click="currentView = 'cards'"
+        />
+      </UFieldGroup>
+
       <UButton
         label="Novo"
         icon="i-lucide:plus"
         @click="openFormModalToCreate"
+        size="lg"
       />
     </div>
 
-    <UTable
-      ref="table"
-      v-model:pagination="pagination"
-      v-model:global-filter="globalFilter"
-      :data="data"
-      :loading="status === 'pending'"
-      :empty="emptyMessage"
-      :columns="columns"
-      :pagination-options="{
-        getPaginationRowModel: getPaginationRowModel(),
-      }"
-      :ui="{
-        root: 'shadow-sm border border-accented rounded',
-        tr: 'hover:light:bg-elevated hover:dark:bg-elevated/50 transition-all',
-      }"
-      class="flex-1"
-    />
-
-    <div class="flex justify-center pt-4 px-4">
-      <UPagination
-        :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
-        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-        :total="table?.tableApi?.getFilteredRowModel().rows.length"
-        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+    <template v-if="currentView === 'table'">
+      <UITable
+        :loading="status === 'pending'"
+        :data="data"
+        :error="error"
+        :columns="columns"
+        :page="page"
+        :items-per-page="itemsPerPage"
+        :total-elements="totalElements"
+        @update:page="page = $event"
+        @retry="refresh"
       />
-    </div>
+    </template>
+    <template v-else>
+      <PlanListCards
+        :loading="status === 'pending'"
+        :data="data"
+        :error="error"
+        :page="page"
+        :items-per-page="itemsPerPage"
+        :total-elements="totalElements"
+        @update:page="page = $event"
+        @refresh="refresh"
+      />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getPaginationRowModel, type Row } from "@tanstack/vue-table";
+import { type Row } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 import { useClipboard } from "@vueuse/core";
 import type { TPlan } from "~/types/plan";
@@ -52,17 +68,17 @@ import PlanFormModal from "~/components/Plan/FormModal.vue";
 import PlanDeleteModal from "~/components/Plan/DeleteModal.vue";
 
 const UDropdownMenu = resolveComponent("UDropdownMenu");
+const UTooltip = resolveComponent("UTooltip");
 const UButton = resolveComponent("UButton");
 const { copy } = useClipboard();
 const overlay = useOverlay();
 const toast = useToast();
 
-const table = useTemplateRef("table");
+const currentView = ref<"cards" | "table">("table");
 
-const pagination = ref({
-  pageIndex: 0,
-  pageSize: 5,
-});
+const page = ref<number>(0);
+const itemsPerPage = ref<number>(10);
+const totalElements = ref<number>(100);
 
 const globalFilter = ref("");
 
@@ -71,44 +87,53 @@ const { data, status, error, refresh } = await asyncFetch<any>(
   "/planos",
 );
 
-const emptyMessage = computed(() => {
-  if (status.value === "error" && error) return getErrorMessage(error.value);
-
-  return "Nenhum plano encontrado";
-});
-
 const columns: TableColumn<TPlan>[] = [
   {
     accessorKey: "nome",
     header: "Nome",
   },
   {
-    accessorKey: "descricao",
-    header: "Descrição",
+    accessorKey: "downloadMB",
+    header: "Download (MB)",
   },
   {
     accessorKey: "uploadMB",
     header: "Upload (MB)",
   },
   {
-    accessorKey: "downloadMB",
-    header: "Download (MB)",
-  },
-  {
     accessorKey: "valor",
-    header: "Valor",
-    meta: {
-      class: {
-        th: "text-right",
-        td: "text-right font-medium",
-      },
-    },
+    header: "Valor/mês",
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue("valor"));
-      return new Intl.NumberFormat("pt-BR", {
+      const formatted = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
       }).format(amount);
+      return h(
+        "span",
+        { class: "text-primary font-medium" },
+        `${formatted}/mês`,
+      );
+    },
+  },
+  {
+    accessorKey: "descricao",
+    header: "Descrição",
+    meta: {
+      class: {
+        th: "w-0",
+      },
+    },
+    cell: ({ row }) => {
+      const descricao = row.getValue("descricao") as string;
+      return h(
+        resolveComponent("UTooltip"),
+        { text: descricao },
+        {
+          default: () =>
+            h("span", { class: "max-w-sm truncate block" }, descricao),
+        },
+      );
     },
   },
   {

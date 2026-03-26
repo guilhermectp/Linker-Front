@@ -14,10 +14,10 @@
     "@iconify-json/lucide": "^1.2.86",
     "@iconify-json/simple-icons": "^1.2.67",
     "@nuxt/image": "2.0.0",
-    "@nuxt/ui": "^4.4.0",
+    "@nuxt/ui": "^4.6.0",
     "maska": "^3.2.0",
     "nuxt": "^4.2.2",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
