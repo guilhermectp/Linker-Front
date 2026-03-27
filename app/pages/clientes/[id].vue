@@ -1,5 +1,13 @@
 <template>
-  <div class="space-y-6">
+  <template v-if="status === 'pending'">
+    <FetchLoading message="Buscando dados do cliente..." />
+  </template>
+
+  <template v-if="error">
+    <FetchError :message="getErrorMessage(error)" @retry="refresh" />
+  </template>
+
+  <div v-if="client" class="space-y-6">
     <div class="flex items-center justify-between gap-4">
       <UButton
         icon="i-heroicons-arrow-left"
@@ -185,7 +193,7 @@
               <dd
                 class="font-medium py-2 px-4 bg-muted light:bg-accented rounded"
               >
-                {{ ponto.diaUltimoPagamento }}
+                {{ ponto.diaUltimoPagamento || "dd/mm/yyyy" }}
               </dd>
             </div>
 
@@ -220,57 +228,55 @@ import {
   ENUM_STATUS_POINT,
   STATUS_POINT,
 } from "~/constants/enumConnectionPoint";
-import { clientesMock } from "~/mocks/clientes";
-import type { TClientUpdateFullForm } from "~/schema/client.update";
+import type { TClientUpdateConnectionPoint } from "~/schema/client.update";
 import type { TGetCliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
-
 const overlay = useOverlay();
 const route = useRoute();
-const id = route.params.id;
 
-const client = ref<TGetCliente>({} as TGetCliente);
+const id = computed(() => route.params.id);
+
+const {
+  data: client,
+  status,
+  error,
+  refresh,
+} = await asyncFetch<TGetCliente>(
+  `get-client-id-${id.value}`,
+  `/clientes/${id.value}`,
+);
+
 const selectedPoint = ref<string | null>(null);
-const selectedTab = ref("boletos");
-
-const tabs = [
-  {
-    label: "Boletos",
-    value: "boletos",
-    slot: "boletos",
-    icon: "i-heroicons-currency-dollar",
-  },
-  {
-    label: "Ordens de Serviço",
-    value: "suporte",
-    slot: "suporte",
-    icon: "i-heroicons-chat-bubble-left-right",
-  },
-];
 
 const openEditPassword = () => {
+  if (!client.value) return;
   const modal = overlay.create(EditPassword);
   modal.open({
-    clientId: client.value.id,
+    clientId: client.value!.id,
   });
 };
 
 const openEditPersonalInfo = () => {
+  if (!client.value) return;
   const modal = overlay.create(EditPersonalInfo);
   modal.open({
+    clientId: client.value.id,
     clientToEdit: client.value,
-    onUpdated: () => {
-      // refresh()
+    onRefresh: async () => {
+      await refresh();
     },
   });
 };
 
 const openAddConnectionPoint = () => {
+  if (!client.value) return;
   const modal = overlay.create(ConnectionPoint);
   modal.open();
 };
 
-const getFormattedPoint = (point: TGetPontoConexao): TClientUpdateFullForm => {
+const getFormattedPoint = (
+  point: TGetPontoConexao,
+): TClientUpdateConnectionPoint => {
   const { plano, ...rest } = point;
   return {
     ponto: {
@@ -342,15 +348,4 @@ const formatCPF = (cpf: string) => {
   if (!cpf) return "";
   return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 };
-
-onBeforeMount(() => {
-  const foundClient = clientesMock.find((c) => c.id === id);
-  if (foundClient) {
-    client.value = foundClient;
-
-    if (foundClient.pontos && foundClient.pontos.length > 0) {
-      selectedPoint.value = foundClient.pontos[0]!.id;
-    }
-  }
-});
 </script>

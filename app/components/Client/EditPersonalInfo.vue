@@ -29,10 +29,13 @@ import {
   clientUpdateInfoSchema,
   type TClientUpdateInfo,
 } from "~/schema/client.update";
+import { clientService } from "~/services/client";
+const toast = useToast();
 
-const emit = defineEmits(["updated"]);
+const emit = defineEmits(["refresh"]);
 
 const props = defineProps({
+  clientId: { type: String, required: true },
   clientToEdit: {
     type: Object as PropType<TClientUpdateInfo>,
     required: true,
@@ -40,13 +43,15 @@ const props = defineProps({
 });
 
 const state = reactive<TClientUpdateInfo>({
-  cpf: props.clientToEdit.cpf || "",
-  nome: props.clientToEdit.nome || "",
-  email: props.clientToEdit.email || "",
-  telefone: props.clientToEdit.telefone || "",
+  cpf: props.clientToEdit.cpf,
+  nome: props.clientToEdit.nome,
+  email: props.clientToEdit.email,
+  telefone: props.clientToEdit.telefone,
 });
 
 const form = ref();
+
+const isLoading = ref<boolean>(false);
 
 const onSubmit = async (close: () => void) => {
   try {
@@ -55,9 +60,27 @@ const onSubmit = async (close: () => void) => {
     return;
   }
 
-  console.log(state);
-  emit("updated");
-  close();
+  try {
+    isLoading.value = true;
+
+    const original = props.clientToEdit;
+    const payload: Partial<TClientUpdateInfo> = {};
+
+    if (state.nome !== original.nome) payload.nome = state.nome;
+    if (state.email !== original.email) payload.email = state.email;
+    if (state.telefone !== original.telefone) payload.nome = state.telefone;
+
+    await clientService.updateInfo(props.clientId, payload);
+    emit("refresh");
+    close();
+  } catch (error) {
+    toast.add({
+      description: getErrorMessage(error),
+      color: "error",
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
