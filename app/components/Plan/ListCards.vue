@@ -37,7 +37,7 @@
     <UCard
       v-for="(plan, index) in data"
       :key="plan.id ?? index"
-      class="group relative bg-muted rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
+      class="group relative bg-muted rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:ring-accent-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
       :ui="{
         header: 'border-0 pt-4 pb-0!',
       }"
@@ -80,26 +80,26 @@
         </div>
       </template>
 
-      <h1 class="font-display font-bold text-[17px] text-highlighted mb-3">
+      <h1 class="font-bold text-lg text-highlighted mb-3">
         {{ plan.nome }}
       </h1>
 
-      <dl class="flex flex-col gap-1.5">
-        <div class="flex gap-2 text-[13px]">
+      <dl class="flex flex-col gap-3">
+        <div class="flex gap-2 text-sm">
           <dt class="text-muted min-w-18 shrink-0">Download:</dt>
           <dd class="text-default font-medium">{{ plan.downloadMB }} Mbps</dd>
         </div>
-        <div class="flex gap-2 text-[13px]">
+        <div class="flex gap-2 text-sm">
           <dt class="text-muted min-w-18 shrink-0">Upload:</dt>
           <dd class="text-default font-medium">{{ plan.uploadMB }} Mbps</dd>
         </div>
-        <div class="flex gap-2 text-[13px]">
+        <div class="flex gap-2 text-sm">
           <dt class="text-muted min-w-18 shrink-0">Valor:</dt>
           <dd class="font-medium text-primary dark:text-primary-400">
             {{ formatCurrency(plan.valor) }}/mês
           </dd>
         </div>
-        <div class="flex gap-2 text-[13px]">
+        <div class="flex gap-2 text-sm">
           <dt class="text-muted min-w-18 shrink-0">Descrição:</dt>
           <dd class="text-default font-medium break-all">
             {{ plan.descricao }}

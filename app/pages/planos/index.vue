@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-8">
-    <div class="flex justify-between items-center gap-4">
+    <div class="flex flex-wrap justify-between items-center gap-4">
       <UInput
         v-model="globalFilter"
         placeholder="Buscar por nome, descrição ou valor"
-        class="w-full"
+        class="flex-1 min-w-72"
         size="lg"
       />
 
@@ -68,7 +68,6 @@ import PlanFormModal from "~/components/Plan/FormModal.vue";
 import PlanDeleteModal from "~/components/Plan/DeleteModal.vue";
 
 const UDropdownMenu = resolveComponent("UDropdownMenu");
-const UTooltip = resolveComponent("UTooltip");
 const UButton = resolveComponent("UButton");
 const { copy } = useClipboard();
 const overlay = useOverlay();
