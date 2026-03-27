@@ -6,6 +6,7 @@
       class="space-y-6 max-w-2xl mx-auto"
       @submit.prevent="onSubmit"
       ref="form"
+      :disabled="isLoading"
     >
       <UStepper
         v-model="currentStepIndex"
@@ -31,7 +32,7 @@
           {{ isFirstStep ? "Cancelar" : "Voltar" }}
         </UButton>
         <UButton v-if="!isLastStep" label="Avançar" @click="handleNext" />
-        <UButton v-else type="submit" label="Cadastrar" />
+        <UButton v-else type="submit" label="Cadastrar" :loading="isLoading" />
       </div>
     </UForm>
   </div>
@@ -45,7 +46,32 @@ import {
   clientCreateAddressSchema,
   type TClientCreate,
 } from "~/schema/client.create";
+import { clientService } from "~/services/client";
 const toast = useToast();
+
+const items = [
+  {
+    slot: "info" as const,
+    title: "Informações do Cliente",
+    icon: "lucide:user",
+  },
+  {
+    slot: "plan" as const,
+    title: "Plano e Acesso",
+    icon: "lucide:wifi",
+  },
+  {
+    slot: "address" as const,
+    title: "Endereço",
+    icon: "lucide:map-pin",
+  },
+] satisfies StepperItem[];
+
+const stepSchemas = [
+  clientCreateInfoSchema,
+  clientCreatePlanSchema,
+  clientCreateAddressSchema,
+];
 
 const state = reactive<TClientCreate>({
   nome: "",
@@ -72,31 +98,9 @@ const state = reactive<TClientCreate>({
   },
 });
 
-const items = [
-  {
-    slot: "info" as const,
-    title: "Informações do Cliente",
-    icon: "lucide:user",
-  },
-  {
-    slot: "plan" as const,
-    title: "Plano e Acesso",
-    icon: "lucide:wifi",
-  },
-  {
-    slot: "address" as const,
-    title: "Endereço",
-    icon: "lucide:map-pin",
-  },
-] satisfies StepperItem[];
-
 const form = ref();
-const currentStepIndex = ref(0);
-const stepSchemas = [
-  clientCreateInfoSchema,
-  clientCreatePlanSchema,
-  clientCreateAddressSchema,
-];
+const isLoading = ref<boolean>(false);
+const currentStepIndex = ref<number>(0);
 
 const isFirstStep = computed(() => currentStepIndex.value === 0);
 const isLastStep = computed(() => currentStepIndex.value === items.length - 1);
@@ -129,25 +133,23 @@ const onSubmit = async () => {
     return;
   }
 
-  const { fetchApi } = useApi();
+  try {
+    isLoading.value = true;
 
-  const { error } = await fetchApi(`/clientes`, {
-    method: "POST",
-    body: state,
-  });
+    await clientService.create(state);
 
-  if (error) {
     toast.add({
-      description: `${error.status} - ${error.message}`,
+      description: "Cliente cadastrado com sucesso.",
+      color: "success",
+    });
+  } catch (error) {
+    toast.add({
+      description: getErrorMessage(error),
       color: "error",
     });
-    return;
+  } finally {
+    isLoading.value = false;
   }
-
-  toast.add({
-    description: `Cliente cadastrado com sucesso`,
-    color: "success",
-  });
 };
 </script>
 
