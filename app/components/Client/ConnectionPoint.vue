@@ -24,7 +24,7 @@
         </UStepper>
 
         <div class="flex justify-between pt-6">
-          <UButton color="neutral" variant="ghost" @click="handleBack">
+          <UButton color="neutral" variant="ghost" @click="handleBack(close)">
             {{ isFirstStep ? "Cancelar" : "Voltar" }}
           </UButton>
           <UButton v-if="!isLastStep" label="Avançar" @click="handleNext" />
@@ -41,15 +41,15 @@ import {
   clientCreateAddressSchema,
   clientCreatePlanSchema,
 } from "~/schema/client.create";
-import type { TClientUpdateFullForm } from "~/schema/client.update";
+import type { TClientUpdateConnectionPoint } from "~/schema/client.update";
 
 const props = defineProps({
   pointToEdit: {
-    type: Object as PropType<TClientUpdateFullForm>,
+    type: Object as PropType<TClientUpdateConnectionPoint>,
   },
 });
 
-const state = reactive<TClientUpdateFullForm>({
+const state = reactive<TClientUpdateConnectionPoint>({
   ponto: {
     planoId: "",
     diaVencimento: 1,
@@ -63,8 +63,8 @@ const state = reactive<TClientUpdateFullForm>({
       rua: "",
       numero: 0,
       complemento: "",
-      latitude: "",
-      longitude: "",
+      latitude: undefined,
+      longitude: undefined,
     },
   },
 });
@@ -94,9 +94,9 @@ const submitLabel = computed(() => (isToEdit.value ? "Salvar" : "Adicionar"));
 const isFirstStep = computed(() => currentStepIndex.value === 0);
 const isLastStep = computed(() => currentStepIndex.value === items.length - 1);
 
-const handleBack = () => {
+const handleBack = (close: () => void) => {
   if (isFirstStep.value) {
-    navigateTo("/clientes");
+    close();
     return;
   }
 

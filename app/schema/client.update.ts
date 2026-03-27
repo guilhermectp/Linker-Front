@@ -17,7 +17,7 @@ export const clientUpdatePasswordSchema = z.object({
     .min(8, "A senha deve ter pelo menos 8 caracteres"),
 });
 
-const clinetUpdateFullSchema = z.object({
+const clientUpdateConnectionPointSchema = z.object({
   ponto: z.object({
     ...clientCreatePlanSchema.shape.ponto.shape,
     ...clientCreateAddressSchema.shape.ponto.shape,
@@ -26,4 +26,6 @@ const clinetUpdateFullSchema = z.object({
 
 export type TClientUpdateInfo = z.infer<typeof clientUpdateInfoSchema>;
 export type TClientUpdatePassword = z.infer<typeof clientUpdatePasswordSchema>;
-export type TClientUpdateFullForm = z.infer<typeof clinetUpdateFullSchema>;
+export type TClientUpdateConnectionPoint = z.infer<
+  typeof clientUpdateConnectionPointSchema
+>;
