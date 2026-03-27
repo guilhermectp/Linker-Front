@@ -3,12 +3,7 @@
     :data="data"
     :loading="loading"
     :columns="columns"
-    :ui="{
-      root: 'shadow-sm border border-default rounded-xl',
-      tr: 'hover:bg-elevated/80 dark:hover:bg-neutral-500/10 transition-all cursor-pointer',
-      th: 'font-mono uppercase text-muted bg-accented tracking-wider text-xs',
-      td: 'text-default text-sm tracking-wide',
-    }"
+    :ui="mergedUi"
     class="bg-white dark:bg-elevated"
     v-model:column-visibility="columnVisibility"
   >
@@ -61,10 +56,10 @@ const columnVisibility = ref(props.columnVisibility);
 const emit = defineEmits(["update:page", "page", "retry"]);
 
 const mergedUi = computed(() => ({
-  root: " shadow-sm border border-default rounded-xl",
-  tr: "hover:bg-elevated/50 dark:hover:bg-elevated/30 transition-all cursor-pointer ",
-  th: "uppercase text-muted bg-accented tracking-wider text-xs",
-  td: "text-default text-sm bg-muted tracking-wide",
+  root: "shadow-sm border border-default rounded-xl",
+  tr: "hover:bg-elevated/80 dark:hover:bg-neutral-500/10 transition-all cursor-pointer",
+  th: "font-mono uppercase text-muted bg-accented tracking-wider text-xs",
+  td: "text-default text-sm tracking-wide",
   ...props.ui,
 }));
 

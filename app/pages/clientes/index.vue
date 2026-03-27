@@ -1,69 +1,78 @@
 <template>
   <div class="space-y-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="flex flex-wrap justify-between items-center gap-4">
       <UInput
         v-model="nameOrUsernameFilter"
         placeholder="Buscar por nome do cliente ou usuário microtik"
-        class="flex-1 lg:col-span-2"
+        class="flex-1 min-w-72"
         size="lg"
       />
       <USelect
         v-model="statusFilter"
         :items="statusItems"
         placeholder="Filtrar por tipo de cadastro"
-        class="flex-1"
+        class="flex-1 min-w-72"
         size="lg"
       />
       <USelect
         v-model="addressFilter"
         :items="addressItems"
         placeholder="Filtrar por tipo de endereço"
-        class="flex-1"
+        class="flex-1 min-w-72"
         size="lg"
       />
-
-      <div class="flex justify-end">
+      <UFieldGroup size="lg" class="">
         <UButton
-          label="Novo"
-          icon="i-lucide:plus"
-          @click="navigateTo('/clientes/criar')"
-          class="w-fit"
-          size="lg"
+          color="neutral"
+          :variant="currentView === 'table' ? 'subtle' : 'outline'"
+          icon="lucide:table"
+          @click="currentView = 'table'"
         />
-      </div>
-    </div>
-
-    <UTable
-      ref="table"
-      v-model:pagination="pagination"
-      v-model:global-filter="nameOrUsernameFilter"
-      :data="data"
-      :loading="status === 'pending'"
-      :columns="columns"
-      :empty="emptyMessage"
-      :pagination-options="{
-        getPaginationRowModel: getPaginationRowModel(),
-      }"
-      class="flex-1"
-      :ui="{
-        root: 'shadow-sm border border-accented rounded',
-        tr: 'hover:light:bg-elevated hover:dark:bg-elevated/50 transition-all',
-      }"
-    />
-
-    <div class="flex justify-center pt-4 px-4">
-      <UPagination
-        :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
-        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-        :total="table?.tableApi?.getFilteredRowModel().rows.length"
-        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+        <UButton
+          color="neutral"
+          :variant="currentView === 'cards' ? 'subtle' : 'outline'"
+          icon="lucide:layout-grid"
+          @click="currentView = 'cards'"
+        />
+      </UFieldGroup>
+      <UButton
+        label="Novo"
+        icon="i-lucide:plus"
+        @click="navigateTo('/clientes/criar')"
+        class="w-fit"
+        size="lg"
       />
     </div>
+
+    <template v-if="currentView === 'table'">
+      <UITable
+        :loading="status === 'pending'"
+        :data="data"
+        :error="error"
+        :columns="columns"
+        :page="page"
+        :items-per-page="itemsPerPage"
+        :total-elements="totalElements"
+        @update:page="page = $event"
+        @retry="refresh"
+      />
+    </template>
+    <template v-else>
+      <ClientListCards
+        :loading="status === 'pending'"
+        :data="data"
+        :error="error"
+        :page="page"
+        :items-per-page="itemsPerPage"
+        :total-elements="totalElements"
+        @update:page="page = $event"
+        @refresh="refresh"
+      />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { SelectItem, TableColumn } from "@nuxt/ui";
 import type { TGetCliente } from "~/types/clients";
 import { STATUS_CLIENT } from "~/constants/enumClient";
@@ -71,7 +80,6 @@ import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 
 const UButton = resolveComponent("UButton");
 const UBadge = resolveComponent("UBadge");
-const { asyncFetch } = useApi();
 
 const statusItems = ref<SelectItem[]>([
   {
@@ -99,21 +107,16 @@ const nameOrUsernameFilter = ref("");
 const statusFilter = ref("");
 const addressFilter = ref("");
 
+const currentView = ref<"cards" | "table">("table");
+
+const page = ref<number>(0);
+const itemsPerPage = ref<number>(10);
+const totalElements = ref<number>(100);
+
 const { data, status, error, refresh } = await asyncFetch<any>(
   "clients-fetch-all-page",
   "/clientes",
 );
-
-const emptyMessage = computed(() => {
-  if (status.value === "error" && error) return getErrorMessage(error.value);
-});
-
-const table = useTemplateRef("table");
-
-const pagination = ref({
-  pageIndex: 0,
-  pageSize: 5,
-});
 
 const columns: TableColumn<TGetCliente>[] = [
   {
@@ -136,10 +139,10 @@ const columns: TableColumn<TGetCliente>[] = [
 
       return h(
         UBadge,
-
         {
           color: status?.color,
-          variant: "subtle",
+          variant: "soft",
+          class: "px-4 rounded-full",
           title: status?.label,
         },
         () => status?.label,
@@ -165,7 +168,8 @@ const columns: TableColumn<TGetCliente>[] = [
             {
               key: ponto.id,
               color: status?.color,
-              variant: "subtle",
+              variant: "soft",
+              class: "px-4 rounded-full",
               title: status?.label,
             },
             () => status?.label,
