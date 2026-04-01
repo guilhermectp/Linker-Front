@@ -34,7 +34,7 @@
     <UCard
       v-for="(client, index) in data"
       :key="client.id ?? index"
-      class="group relative bg-muted rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:ring-accent-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
+      class="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:ring-primary-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
       :ui="{
         header: 'border-0 pt-4 pb-0!',
       }"
@@ -70,7 +70,8 @@
           <dd>
             <UBadge
               variant="soft"
-              :label="client.status"
+              :label="STATUS_CLIENT[client.status].label"
+              :color="STATUS_CLIENT[client.status].color"
               class="rounded-full px-4"
             />
           </dd>
@@ -80,7 +81,8 @@
           <dd class="text-default font-medium break-all">
             <UBadge
               variant="soft"
-              :label="client.status"
+              :label="STATUS_CLIENT[client.status].label"
+              :color="STATUS_CLIENT[client.status].color"
               class="rounded-full px-4"
             />
           </dd>
@@ -102,6 +104,7 @@
 <script setup lang="ts">
 import type { TRequestError } from "~/types/requests";
 import type { TGetCliente } from "~/types/clients";
+import { STATUS_CLIENT } from "~/constants/enumClient";
 
 const toast = useToast();
 const overlay = useOverlay();

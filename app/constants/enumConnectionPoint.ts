@@ -11,7 +11,7 @@ export const ENUM_STATUS_POINT: Record<TPontoConexaoStatus, string> = {
 export const STATUS_POINT: Record<TPontoConexaoStatus, TStatusConfig> = {
   ATIVO: {
     label: "Ativo",
-    color: "primary",
+    color: "success",
     short: "A",
   },
   REDUZIDO: {

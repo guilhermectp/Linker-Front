@@ -1,6 +1,6 @@
 <template>
   <UApp :locale="pt_br">
-    <UHeader mode="slideover" class="bg-white dark:bg-default">
+    <UHeader mode="slideover" class="bg-neutral-50 dark:bg-elevated">
       <template #left>
         <NuxtLink to="/"> Linker </NuxtLink>
       </template>
@@ -97,7 +97,7 @@ const items = ref<NavigationMenuItem[]>([
   {
     label: "Suporte",
     // icon: "lucide:clipboard-list",
-    to: "/",
+    to: "/suporte",
   },
   {
     label: "Planos",

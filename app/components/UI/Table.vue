@@ -4,7 +4,6 @@
     :loading="loading"
     :columns="columns"
     :ui="mergedUi"
-    class="bg-white dark:bg-elevated"
     v-model:column-visibility="columnVisibility"
   >
     <template #loading>
@@ -56,10 +55,10 @@ const columnVisibility = ref(props.columnVisibility);
 const emit = defineEmits(["update:page", "page", "retry"]);
 
 const mergedUi = computed(() => ({
-  root: "shadow-sm border border-default rounded-xl",
-  tr: "hover:bg-elevated/80 dark:hover:bg-neutral-500/10 transition-all cursor-pointer",
-  th: "font-mono uppercase text-muted bg-accented tracking-wider text-xs",
-  td: "text-default text-sm tracking-wide",
+  // root: "shadow-sm border border-default rounded-xl",
+  // tr: "hover:bg-elevated/80 dark:hover:bg-neutral-500/10 transition-all cursor-pointer",
+  // th: "font-mono uppercase text-muted bg-accented tracking-wider text-xs",
+  // td: "text-default text-sm tracking-wide",
   ...props.ui,
 }));
 

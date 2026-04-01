@@ -189,7 +189,6 @@ const columns: TableColumn<TGetCliente>[] = [
       return h(UButton, {
         label: "",
         "trailing-icon": "lucide:arrow-right",
-        color: "info",
         variant: "ghost",
         "aria-label": "Actions dropdown",
         onClick: () => navigateTo(`/clientes/${row.original.id}`),

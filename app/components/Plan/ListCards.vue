@@ -37,14 +37,14 @@
     <UCard
       v-for="(plan, index) in data"
       :key="plan.id ?? index"
-      class="group relative bg-muted rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:ring-accent-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
+      class="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:ring-primary-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
       :ui="{
         header: 'border-0 pt-4 pb-0!',
       }"
     >
       <template #header>
         <!-- <div
-          class="absolute top-0 left-0 right-0 h-0.75 bg-accent-400 scale-x-0 origin-left transition-transform duration-200 group-hover:scale-x-100"
+          class="absolute top-0 left-0 right-0 h-0.75 bg-primary-400 scale-x-0 origin-left transition-transform duration-200 group-hover:scale-x-100"
         /> -->
 
         <div class="flex items-center justify-between">

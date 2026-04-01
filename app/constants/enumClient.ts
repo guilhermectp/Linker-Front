@@ -10,7 +10,7 @@ export const ENUM_STATUS_CLIENT: Record<TClienteStatus, string> = {
 export const STATUS_CLIENT: Record<TClienteStatus, TStatusConfig> = {
   ATIVO: {
     label: "Ativo",
-    color: "primary",
+    color: "success",
   },
   SUSPENSO: {
     label: "Suspenso",
