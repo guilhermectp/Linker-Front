@@ -68,7 +68,7 @@ const onSubmit = async (close: () => void) => {
 
     if (state.nome !== original.nome) payload.nome = state.nome;
     if (state.email !== original.email) payload.email = state.email;
-    if (state.telefone !== original.telefone) payload.nome = state.telefone;
+    if (state.telefone !== original.telefone) payload.telefone = state.telefone;
 
     await clientService.updateInfo(props.clientId, payload);
     emit("refresh");

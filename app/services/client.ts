@@ -23,7 +23,7 @@ export const clientService = {
     updatedClient: Partial<TClientUpdateInfo>,
   ) {
     return apiFetch(`/clientes/atualizar/${clientId}`, {
-      method: "PUT",
+      method: "PATCH",
       body: updatedClient,
     });
   },
