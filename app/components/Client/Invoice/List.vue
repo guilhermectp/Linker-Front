@@ -83,13 +83,26 @@
           <div
             class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <UButton variant="ghost" size="sm" icon="lucide:printer" />
-            <UButton variant="ghost" size="sm" icon="lucide:pencil" />
             <UButton
-              variant="ghost"
+              variant="customButton"
+              color="success"
               size="sm"
+              icon="lucide:printer"
+              title="Imprimir"
+            />
+            <UButton
+              variant="customButton"
+              color="warning"
+              size="sm"
+              icon="lucide:pencil"
+              title="Editar"
+            />
+            <UButton
+              variant="customButton"
               color="error"
+              size="sm"
               icon="lucide:trash-2"
+              title="Excluir"
             />
           </div>
         </div>
@@ -117,17 +130,17 @@ const ENUM_STATUS_BOLETO = {
 };
 
 const statusConfig = {
-  PENDENTE: {
-    bg: "bg-warning/10",
-    icon: "i-lucide-clock",
-    iconColor: "text-warning",
-    color: "warning" as const,
-  },
   PAGO: {
     bg: "bg-success/10",
     icon: "i-lucide-check-circle",
     iconColor: "text-success",
     color: "success" as const,
+  },
+  PENDENTE: {
+    bg: "bg-warning/10",
+    icon: "i-lucide-clock",
+    iconColor: "text-warning",
+    color: "warning" as const,
   },
   VENCIDO: {
     bg: "bg-error/10",
@@ -136,7 +149,7 @@ const statusConfig = {
     color: "error" as const,
   },
   CANCELADO: {
-    bg: "bg-neutral/10",
+    bg: "bg-accented",
     icon: "i-lucide-ban",
     iconColor: "text-muted",
     color: "neutral" as const,

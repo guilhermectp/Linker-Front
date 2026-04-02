@@ -56,21 +56,24 @@
 
           <div class="space-x-2">
             <UButton
-              class="rounded-md bg-accented text-muted transition-all duration-300 hover:bg-info-400/15 hover:text-info-400"
-              title="Copiar nome"
+              variant="customButton"
+              color="success"
               @click="handleCopy(plan)"
+              title="Copiar nome"
               icon="lucide:copy"
               size="sm"
             />
             <UButton
-              class="rounded-md bg-accented text-muted transition-all duration-300 hover:bg-warn-500/15 hover:text-warn-500"
+              variant="customButton"
+              color="warning"
               title="Editar plano"
               @click="openFormModalToEdit(plan)"
               icon="lucide:pencil"
               size="sm"
             />
             <UButton
-              class="rounded-md bg-accented text-muted transition-all duration-300 hover:bg-danger-500/15 hover:text-danger-500"
+              variant="customButton"
+              color="error"
               title="Excluir plano"
               @click="openDeleteModal(plan)"
               icon="lucide:trash-2"

@@ -76,13 +76,26 @@
           <div
             class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <UButton variant="ghost" size="sm" icon="lucide:printer" />
-            <UButton variant="ghost" size="sm" icon="lucide:pencil" />
             <UButton
-              variant="ghost"
+              variant="customButton"
+              color="success"
               size="sm"
+              icon="lucide:printer"
+              title="Imprimir"
+            />
+            <UButton
+              variant="customButton"
+              color="warning"
+              size="sm"
+              icon="lucide:pencil"
+              title="Editar"
+            />
+            <UButton
+              variant="customButton"
               color="error"
+              size="sm"
               icon="lucide:trash-2"
+              title="Excluir"
             />
           </div>
         </div>
@@ -116,24 +129,24 @@ const ENUM_STATUS_SERVICE = {
 
 const typeConfig = {
   INSTALACAO: {
-    bg: "bg-info/10",
+    bg: "bg-success/10",
     icon: "i-lucide-wifi",
+    iconColor: "text-success",
+  },
+  TROCA_ENDERECO: {
+    bg: "bg-info/10",
+    icon: "i-lucide-map-pin",
     iconColor: "text-info",
   },
   SUPORTE: {
-    bg: "bg-primary/10",
+    bg: "bg-accented",
     icon: "i-lucide-wrench",
-    iconColor: "text-primary",
+    iconColor: "text-neutral",
   },
   CANCELAMENTO: {
-    bg: "bg-warning/10",
+    bg: "bg-error/10",
     icon: "i-lucide-package-minus",
-    iconColor: "text-warning",
-  },
-  TROCA_ENDERECO: {
-    bg: "bg-success/10",
-    icon: "i-lucide-map-pin",
-    iconColor: "text-success",
+    iconColor: "text-error",
   },
 };
 
