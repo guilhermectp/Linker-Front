@@ -50,7 +50,7 @@
 import {
   clientUpdatePasswordSchema,
   type TClientUpdatePassword,
-} from "~/schema/client.update";
+} from "~/schema/client";
 import { clientService } from "~/services/client";
 const { successToast, errorToast } = useAppToast();
 

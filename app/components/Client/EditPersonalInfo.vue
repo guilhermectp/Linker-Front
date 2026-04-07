@@ -28,7 +28,7 @@
 import {
   clientUpdateInfoSchema,
   type TClientUpdateInfo,
-} from "~/schema/client.update";
+} from "~/schema/client";
 import { clientService } from "~/services/client";
 const { successToast, errorToast } = useAppToast();
 

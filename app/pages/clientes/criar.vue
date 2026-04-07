@@ -40,12 +40,11 @@
 
 <script setup lang="ts">
 import type { StepperItem } from "@nuxt/ui";
+import { clientCreateInfoSchema, type TClientCreate } from "~/schema/client";
 import {
-  clientCreateInfoSchema,
-  clientCreatePlanSchema,
-  clientCreateAddressSchema,
-  type TClientCreate,
-} from "~/schema/client.create";
+  connectionPointAddressSchema,
+  connectionPointPlanSchema,
+} from "~/schema/connectionPoint";
 import { clientService } from "~/services/client";
 const toast = useToast();
 
@@ -69,8 +68,8 @@ const items = [
 
 const stepSchemas = [
   clientCreateInfoSchema,
-  clientCreatePlanSchema,
-  clientCreateAddressSchema,
+  connectionPointPlanSchema,
+  connectionPointAddressSchema,
 ];
 
 const state = reactive<TClientCreate>({

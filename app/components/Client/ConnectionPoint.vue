@@ -38,18 +38,18 @@
 <script setup lang="ts">
 import type { StepperItem } from "@nuxt/ui";
 import {
-  clientCreateAddressSchema,
-  clientCreatePlanSchema,
-} from "~/schema/client.create";
-import type { TClientUpdateConnectionPoint } from "~/schema/client.update";
+  connectionPointAddressSchema,
+  connectionPointPlanSchema,
+  type TUpdateConnectionPoint,
+} from "~/schema/connectionPoint";
 
 const props = defineProps({
   pointToEdit: {
-    type: Object as PropType<TClientUpdateConnectionPoint>,
+    type: Object as PropType<TUpdateConnectionPoint>,
   },
 });
 
-const state = reactive<TClientUpdateConnectionPoint>({
+const state = reactive<TUpdateConnectionPoint>({
   ponto: {
     planoId: "",
     diaVencimento: 1,
@@ -84,7 +84,7 @@ const items = [
 
 const form = ref();
 const currentStepIndex = ref(0);
-const stepSchemas = [clientCreatePlanSchema, clientCreateAddressSchema];
+const stepSchemas = [connectionPointPlanSchema, connectionPointAddressSchema];
 
 const isToEdit = computed(() => props.pointToEdit);
 const title = computed(() =>

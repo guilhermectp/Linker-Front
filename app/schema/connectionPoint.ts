@@ -23,7 +23,7 @@ const ruralAddressSchema = z.object({
   longitude: z.number().optional(),
 });
 
-export const clientCreateAddressSchema = z.object({
+export const connectionPointAddressSchema = z.object({
   ponto: z.object({
     endereco: z.discriminatedUnion("tipoEndereco", [
       urbanAddressSchema,
@@ -32,7 +32,7 @@ export const clientCreateAddressSchema = z.object({
   }),
 });
 
-export const clientCreatePlanSchema = z.object({
+export const connectionPointPlanSchema = z.object({
   ponto: z.object({
     planoId: z.uuid("Plano inválido"),
     diaVencimento: z
@@ -45,25 +45,11 @@ export const clientCreatePlanSchema = z.object({
   }),
 });
 
-export const clientCreateInfoSchema = z.object({
-  cpf: z.string().length(14, "O CPF deve ter 11 dígitos"),
-  nome: z.string().trim().min(2, "Nome é obrigatório"),
-  email: z.email("E-mail inválido"),
-  telefone: z.string().length(15, "O telefone deve conter 10 dígitos"),
-  senhaCentralCliente: z
-    .string()
-    .min(8, "A senha deve ter pelo menos 8 caracteres"),
-});
-
-export const clientCreateFullSchema = z.object({
-  ...clientCreateInfoSchema.shape,
+export const connectionPointFullSchema = z.object({
   ponto: z.object({
-    ...clientCreatePlanSchema.shape.ponto.shape,
-    ...clientCreateAddressSchema.shape.ponto.shape,
+    ...connectionPointPlanSchema.shape.ponto.shape,
+    ...connectionPointAddressSchema.shape.ponto.shape,
   }),
 });
 
-// export type TClientCreateInfo = z.infer<typeof clientCreateInfoSchema>;
-// export type TClientCreatePlan = z.infer<typeof clientCreatePlanSchema>;
-// export type TClientCreateAddress = z.infer<typeof clientCreateAddressSchema>;
-export type TClientCreate = z.infer<typeof clientCreateFullSchema>;
+export type TUpdateConnectionPoint = z.infer<typeof connectionPointFullSchema>;

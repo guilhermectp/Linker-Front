@@ -1,9 +1,9 @@
-import type { TClientCreate } from "~/schema/client.create";
+import type { TClientCreate } from "~/schema/client";
 import type {
   // TClientUpdateConnectionPoint,
   TClientUpdateInfo,
   TClientUpdatePassword,
-} from "~/schema/client.update";
+} from "~/schema/client";
 
 export const clientService = {
   async getById(clientId: string) {

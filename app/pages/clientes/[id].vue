@@ -228,7 +228,7 @@ import {
   ENUM_STATUS_POINT,
   STATUS_POINT,
 } from "~/constants/enumConnectionPoint";
-import type { TClientUpdateConnectionPoint } from "~/schema/client.update";
+import type { TUpdateConnectionPoint } from "~/schema/connectionPoint";
 import type { TGetCliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
 const overlay = useOverlay();
@@ -274,9 +274,7 @@ const openAddConnectionPoint = () => {
   modal.open();
 };
 
-const getFormattedPoint = (
-  point: TGetPontoConexao,
-): TClientUpdateConnectionPoint => {
+const getFormattedPoint = (point: TGetPontoConexao): TUpdateConnectionPoint => {
   const { plano, ...rest } = point;
   return {
     ponto: {
