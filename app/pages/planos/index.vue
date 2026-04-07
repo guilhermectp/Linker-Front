@@ -167,7 +167,7 @@ const columns: TableColumn<TPlan>[] = [
 const getRowItems = (row: Row<TPlan>) => {
   return [
     {
-      label: "Copiar Plano",
+      label: "Copiar",
       onSelect() {
         copy(row.original.nome);
 
@@ -179,13 +179,13 @@ const getRowItems = (row: Row<TPlan>) => {
       },
     },
     {
-      label: "Editar Plano",
+      label: "Editar",
       onSelect() {
         openFormModalToEdit(row.original);
       },
     },
     {
-      label: "Deletar Plano",
+      label: "Deletar",
       onSelect() {
         openDeleteModal(row.original);
       },

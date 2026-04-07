@@ -66,7 +66,7 @@
             <UButton
               variant="customButton"
               color="warning"
-              title="Editar plano"
+              title="Editar"
               @click="openFormModalToEdit(plan)"
               icon="lucide:pencil"
               size="sm"
@@ -74,7 +74,7 @@
             <UButton
               variant="customButton"
               color="error"
-              title="Excluir plano"
+              title="Excluir"
               @click="openDeleteModal(plan)"
               icon="lucide:trash-2"
               size="sm"
