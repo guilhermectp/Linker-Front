@@ -1,7 +1,8 @@
 import type { TClientCreate } from "~/schema/client.create";
 import type {
-  TClientUpdateConnectionPoint,
+  // TClientUpdateConnectionPoint,
   TClientUpdateInfo,
+  TClientUpdatePassword,
 } from "~/schema/client.update";
 
 export const clientService = {
@@ -28,14 +29,24 @@ export const clientService = {
     });
   },
 
-  async updateConnectionPoint(
+  async updateCustomerCentralPassword(
     clientId: string,
-    pointId: string,
-    updatedPoint: TClientUpdateConnectionPoint,
+    newPassword: TClientUpdatePassword,
   ) {
-    return apiFetch(`/clientes/atualizar-ponto/${clientId}/${pointId}`, {
+    return apiFetch(`/clientes/atualizar-senha/${clientId}`, {
       method: "PUT",
-      body: updatedPoint,
+      body: newPassword,
     });
   },
+
+  // async updateConnectionPoint(
+  //   clientId: string,
+  //   pointId: string,
+  //   updatedPoint: TClientUpdateConnectionPoint,
+  // ) {
+  //   return apiFetch(`/clientes/atualizar-ponto/${clientId}/${pointId}`, {
+  //     method: "PUT",
+  //     body: updatedPoint,
+  //   });
+  // },
 };

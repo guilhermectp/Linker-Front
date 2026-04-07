@@ -6,7 +6,7 @@
         :state="state"
         class="space-y-6 mx-auto"
         @submit.prevent="onSubmit(close)"
-        ref="form"
+        :disabled="isLoading"
       >
         <UFormField label="Senha" name="senhaCentralCliente" required>
           <UInput
@@ -37,8 +37,9 @@
             variant="ghost"
             label="Cancelar"
             @click="close"
+            :disabled="isLoading"
           />
-          <UButton type="submit" label="Salvar" />
+          <UButton type="submit" label="Salvar" :loading="isLoading" />
         </div>
       </UForm>
     </template>
@@ -50,6 +51,8 @@ import {
   clientUpdatePasswordSchema,
   type TClientUpdatePassword,
 } from "~/schema/client.update";
+import { clientService } from "~/services/client";
+const { successToast, errorToast } = useAppToast();
 
 const props = defineProps({
   clientId: { type: String, required: true },
@@ -61,17 +64,24 @@ const state = reactive<TClientUpdatePassword>({
   senhaCentralCliente: "",
 });
 
-const form = ref();
+const isLoading = ref<boolean>(false);
 
 const onSubmit = async (close: () => void) => {
   try {
-    await form.value?.validate();
-  } catch (error) {
-    return;
-  }
+    isLoading.value = true;
 
-  console.log(state);
-  close();
+    const payload: TClientUpdatePassword = {
+      senhaCentralCliente: state.senhaCentralCliente,
+    };
+
+    await clientService.updateCustomerCentralPassword(props.clientId, payload);
+    successToast("Senha alterada com sucesso.");
+    close();
+  } catch (error) {
+    errorToast(error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
