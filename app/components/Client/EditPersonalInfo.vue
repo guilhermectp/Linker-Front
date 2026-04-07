@@ -30,7 +30,7 @@ import {
   type TClientUpdateInfo,
 } from "~/schema/client.update";
 import { clientService } from "~/services/client";
-const toast = useToast();
+const { successToast, errorToast } = useAppToast();
 
 const emit = defineEmits(["refresh"]);
 
@@ -49,17 +49,9 @@ const state = reactive<TClientUpdateInfo>({
   telefone: props.clientToEdit.telefone,
 });
 
-const form = ref();
-
 const isLoading = ref<boolean>(false);
 
 const onSubmit = async (close: () => void) => {
-  try {
-    await form.value?.validate();
-  } catch (error) {
-    return;
-  }
-
   try {
     isLoading.value = true;
 
@@ -71,13 +63,11 @@ const onSubmit = async (close: () => void) => {
     if (state.telefone !== original.telefone) payload.telefone = state.telefone;
 
     await clientService.updateInfo(props.clientId, payload);
+    successToast("Informações alteradas.");
     emit("refresh");
     close();
   } catch (error) {
-    toast.add({
-      description: getErrorMessage(error),
-      color: "error",
-    });
+    errorToast(error);
   } finally {
     isLoading.value = false;
   }
