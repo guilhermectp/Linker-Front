@@ -271,7 +271,9 @@ const openEditPersonalInfo = () => {
 const openAddConnectionPoint = () => {
   if (!client.value) return;
   const modal = overlay.create(ConnectionPoint);
-  modal.open();
+  modal.open({
+    clientId: id.value as string,
+  });
 };
 
 const getFormattedPoint = (point: TGetPontoConexao): TUpdateConnectionPoint => {
@@ -294,6 +296,8 @@ const getPointActions = (ponto: TGetPontoConexao) => {
       onSelect: () => {
         const modal = overlay.create(ConnectionPoint);
         modal.open({
+          clientId: id.value as string,
+          connectionPointId: ponto.id as string,
           pointToEdit: getFormattedPoint(ponto),
         });
       },

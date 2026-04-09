@@ -6,7 +6,7 @@ const urbanAddressSchema = z.object({
   cidade: z.string().min(2, "Cidade é obrigatória"),
   bairro: z.string().min(2, "Bairro é obrigatório"),
   rua: z.string().min(2, "Rua é obrigatório"),
-  numero: z.number().int().positive("Número inválido"),
+  numero: z.number("Número inválido").int().positive("Número inválido"),
   complemento: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
@@ -35,21 +35,34 @@ export const connectionPointAddressSchema = z.object({
 export const connectionPointPlanSchema = z.object({
   ponto: z.object({
     planoId: z.uuid("Plano inválido"),
-    diaVencimento: z
-      .number()
-      .int()
-      .min(1, "Dia mínimo é 1")
-      .max(31, "Dia máximo é 31"),
+    diaVencimento: z.number().int().min(1).max(31),
     loginMK: z.string().min(8, "O login deve ter pelo menos 8 caracteres"),
-    senhaMK: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
   }),
 });
 
+export const connectionPointPlanCreateSchema = connectionPointPlanSchema.extend(
+  {
+    ponto: connectionPointPlanSchema.shape.ponto.extend({
+      senhaMK: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+    }),
+  },
+);
+
 export const connectionPointFullSchema = z.object({
   ponto: z.object({
-    ...connectionPointPlanSchema.shape.ponto.shape,
+    ...connectionPointPlanCreateSchema.shape.ponto.shape,
     ...connectionPointAddressSchema.shape.ponto.shape,
   }),
 });
 
-export type TUpdateConnectionPoint = z.infer<typeof connectionPointFullSchema>;
+export const connectionPointUpdateSchema = z.object({
+  ponto: z.object({
+    ...connectionPointPlanSchema.shape.ponto.shape, // sem senhaMK
+    ...connectionPointAddressSchema.shape.ponto.shape,
+  }),
+});
+
+export type TCreateConnectionPoint = z.infer<typeof connectionPointFullSchema>;
+export type TUpdateConnectionPoint = z.infer<
+  typeof connectionPointUpdateSchema
+>;

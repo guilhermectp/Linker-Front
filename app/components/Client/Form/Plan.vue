@@ -24,7 +24,12 @@
       <UInput v-model="model.loginMK" class="w-full" />
     </UFormField>
 
-    <UFormField label="Senha do Microtik" name="ponto.senhaMK" required>
+    <UFormField
+      v-if="!props.isEditing"
+      label="Senha do Microtik"
+      name="ponto.senhaMK"
+      required
+    >
       <UInput v-model="model.senhaMK" class="w-full" />
     </UFormField>
   </div>
