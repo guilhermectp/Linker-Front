@@ -17,7 +17,6 @@ export const clientCreateFullSchema = z.object({
 });
 
 export const clientUpdateInfoSchema = z.object({
-  cpf: z.string().length(14, "O CPF deve ter 11 dígitos"),
   nome: z.string().trim().min(2, "Nome é obrigatório"),
   email: z.email("E-mail inválido"),
   telefone: z.string().length(15, "O telefone deve conter 10 dígitos"),

@@ -1,8 +1,8 @@
 <template>
   <div>
     <UForm
+      :state="stepStates[currentStepIndex]"
       :schema="stepSchemas[currentStepIndex]"
-      :state="state"
       class="space-y-6 max-w-2xl mx-auto"
       @submit.prevent="onSubmit"
       ref="form"
@@ -19,11 +19,15 @@
         </template>
 
         <template #plan>
-          <ClientFormPlan v-model="state.ponto" />
+          <ClientFormPlan v-model="state.plano" />
         </template>
 
         <template #address>
-          <ClientFormAddress v-model="state.ponto.endereco" />
+          <ClientFormAddress v-model="state.endereco" />
+        </template>
+
+        <template #access>
+          <ClientFormMicrotik v-model="state.microtik" />
         </template>
       </UStepper>
 
@@ -43,6 +47,7 @@ import type { StepperItem } from "@nuxt/ui";
 import { clientCreateInfoSchema, type TClientCreate } from "~/schema/client";
 import {
   connectionPointAddressSchema,
+  connectionPointMicrotikSchema,
   connectionPointPlanSchema,
 } from "~/schema/connectionPoint";
 import { clientService } from "~/services/client";
@@ -56,7 +61,7 @@ const items = [
   },
   {
     slot: "plan" as const,
-    title: "Plano e Acesso",
+    title: "Plano",
     icon: "lucide:wifi",
   },
   {
@@ -64,13 +69,26 @@ const items = [
     title: "Endereço",
     icon: "lucide:map-pin",
   },
+  {
+    slot: "access" as const,
+    title: "Acesso",
+    icon: "lucide:lock-keyhole",
+  },
 ] satisfies StepperItem[];
 
 const stepSchemas = [
   clientCreateInfoSchema,
   connectionPointPlanSchema,
   connectionPointAddressSchema,
+  connectionPointMicrotikSchema,
 ];
+
+const stepStates = computed(() => [
+  state,
+  state.plano,
+  state.endereco,
+  state.microtik,
+]);
 
 const state = reactive<TClientCreate>({
   nome: "",
@@ -78,22 +96,24 @@ const state = reactive<TClientCreate>({
   email: "",
   telefone: "",
   senhaCentralCliente: "",
-  ponto: {
+  plano: {
     planoId: "",
     diaVencimento: 10,
-    loginMK: "",
+  },
+  microtik: {
     senhaMK: "",
-    endereco: {
-      tipoEndereco: "URBANO",
-      cep: "",
-      cidade: "",
-      bairro: "",
-      rua: "",
-      numero: 0,
-      complemento: "",
-      latitude: undefined,
-      longitude: undefined,
-    },
+    loginMK: "",
+  },
+  endereco: {
+    tipoEndereco: "URBANO",
+    cep: "",
+    cidade: "",
+    bairro: "",
+    rua: "",
+    numero: 0,
+    complemento: "",
+    latitude: undefined,
+    longitude: undefined,
   },
 });
 
@@ -148,6 +168,7 @@ const onSubmit = async () => {
     });
   } finally {
     isLoading.value = false;
+    navigateTo(`/clientes`);
   }
 };
 </script>

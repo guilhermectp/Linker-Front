@@ -1,6 +1,6 @@
 <template>
   <div class="bg-muted border border-accented rounded-lg p-4 space-y-6">
-    <UFormField label="Plano" name="ponto.planoId" required>
+    <UFormField label="Plano" name="planoId" required>
       <USelect
         v-model="model.planoId"
         :items="data"
@@ -12,36 +12,25 @@
       />
     </UFormField>
 
-    <UFormField label="Dia de Vencimento" name="ponto.diaVencimento" required>
+    <UFormField label="Dia de Vencimento" name="diaVencimento" required>
       <USelect
         v-model="model.diaVencimento"
         :items="[5, 10, 15, 20, 25]"
         class="w-full"
       />
     </UFormField>
-
-    <UFormField label="Usuario do Microtik" name="ponto.loginMK" required>
-      <UInput v-model="model.loginMK" class="w-full" />
-    </UFormField>
-
-    <UFormField
-      v-if="!props.isEditing"
-      label="Senha do Microtik"
-      name="ponto.senhaMK"
-      required
-    >
-      <UInput v-model="model.senhaMK" class="w-full" />
-    </UFormField>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { TFormPontoConexao } from "~/types/connectionPoint";
+import type { TConnectionPointPlan } from "~/schema/connectionPoint";
 import type { TPlan } from "~/types/plan";
 
 const props = defineProps({
-  modelValue: { type: Object as PropType<TFormPontoConexao>, required: true },
-  isEditing: { type: Boolean, default: false },
+  modelValue: {
+    type: Object as PropType<TConnectionPointPlan>,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -51,7 +40,7 @@ const model = computed({
   set: (val) => emit("update:modelValue", val),
 });
 
-const { data, status, error, refresh } = await asyncFetch<TPlan[]>(
+const { data, status } = await asyncFetch<TPlan[]>(
   "plans-fetch-all-select",
   "/planos",
   {

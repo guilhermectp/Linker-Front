@@ -1,6 +1,6 @@
 <template>
   <div class="bg-muted border border-accented rounded-lg p-4 space-y-6">
-    <UFormField label="Localidade" name="ponto.endereco.tipoEndereco" required>
+    <UFormField label="Localidade" name="tipoEndereco" required>
       <URadioGroup
         v-model="model.tipoEndereco"
         orientation="horizontal"
@@ -11,23 +11,23 @@
     </UFormField>
 
     <div v-if="model.tipoEndereco === 'URBANO'" class="grid grid-cols-2 gap-6">
-      <UFormField label="CEP" name="ponto.endereco.cep" required>
+      <UFormField label="CEP" name="cep" required>
         <UInput v-model="model.cep" class="w-full" v-maska="'##.###-###'" />
       </UFormField>
 
-      <UFormField label="Município" name="ponto.endereco.cidade" required>
+      <UFormField label="Município" name="cidade" required>
         <UInput v-model="model.cidade" class="w-full" />
       </UFormField>
 
-      <UFormField label="Bairro" name="ponto.endereco.bairro" required>
+      <UFormField label="Bairro" name="bairro" required>
         <UInput v-model="model.bairro" class="w-full" />
       </UFormField>
 
-      <UFormField label="Rua" name="ponto.endereco.rua" required>
+      <UFormField label="Rua" name="rua" required>
         <UInput v-model="model.rua" class="w-full" />
       </UFormField>
 
-      <UFormField label="Número" name="ponto.endereco.numero" required>
+      <UFormField label="Número" name="numero" required>
         <UInputNumber
           v-model="model.numero"
           :min="1"
@@ -41,14 +41,14 @@
     <div v-else class="grid grid-cols-2 gap-6">
       <UFormField
         label="Cidade/Vila/Povoado de referência"
-        name="ponto.endereco.cidadeReferencia"
+        name="cidadeReferencia"
         required
       >
         <UInput v-model="model.cidadeReferencia" class="w-full" />
       </UFormField>
       <UFormField
         label="Nome da Fazenda/Chácara/Sítio"
-        name="ponto.endereco.nomeLocal"
+        name="nomeLocal"
         required
       >
         <UInput v-model="model.nomeLocal" class="w-full" />
@@ -56,11 +56,11 @@
     </div>
 
     <div class="grid grid-cols-2 gap-6">
-      <UFormField label="Complemento" name="ponto.endereco.complemento">
+      <UFormField label="Complemento" name="complemento">
         <UInput v-model="model.complemento" class="w-full" />
       </UFormField>
 
-      <UFormField label="Latitude" name="ponto.endereco.latitude">
+      <UFormField label="Latitude" name="latitude">
         <UInputNumber
           v-model="model.latitude"
           :increment="false"
@@ -68,7 +68,7 @@
         />
       </UFormField>
 
-      <UFormField label="Longitude" name="ponto.endereco.longitude">
+      <UFormField label="Longitude" name="longitude">
         <UInputNumber
           v-model="model.longitude"
           :increment="false"
@@ -81,14 +81,14 @@
 
 <script setup lang="ts">
 import { vMaska } from "maska/vue";
-import type { TFormEndereco, TTipoEndereco } from "~/types/connectionPoint";
+import type { TConnectionPointAddress } from "~/schema/connectionPoint";
+import type { TTipoEndereco } from "~/types/connectionPoint";
 
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<TFormEndereco>,
+    type: Object as PropType<TConnectionPointAddress>,
     required: true,
   },
-  isEditing: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["update:modelValue"]);

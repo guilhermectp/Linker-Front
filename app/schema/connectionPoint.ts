@@ -23,46 +23,36 @@ const ruralAddressSchema = z.object({
   longitude: z.number().optional(),
 });
 
-export const connectionPointAddressSchema = z.object({
-  ponto: z.object({
-    endereco: z.discriminatedUnion("tipoEndereco", [
-      urbanAddressSchema,
-      ruralAddressSchema,
-    ]),
-  }),
-});
-
-export const connectionPointPlanSchema = z.object({
-  ponto: z.object({
-    planoId: z.uuid("Plano inválido"),
-    diaVencimento: z.number().int().min(1).max(31),
-    loginMK: z.string().min(8, "O login deve ter pelo menos 8 caracteres"),
-  }),
-});
-
-export const connectionPointPlanCreateSchema = connectionPointPlanSchema.extend(
-  {
-    ponto: connectionPointPlanSchema.shape.ponto.extend({
-      senhaMK: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
-    }),
-  },
+export const connectionPointAddressSchema = z.discriminatedUnion(
+  "tipoEndereco",
+  [urbanAddressSchema, ruralAddressSchema],
 );
 
+export const connectionPointPlanSchema = z.object({
+  planoId: z.uuid("Plano inválido"),
+  diaVencimento: z.number().int().min(1).max(31),
+});
+
+export const connectionPointMicrotikSchema = z.object({
+  loginMK: z.string().min(8, "O login deve ter pelo menos 8 caracteres"),
+  senhaMK: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+});
+
 export const connectionPointFullSchema = z.object({
-  ponto: z.object({
-    ...connectionPointPlanCreateSchema.shape.ponto.shape,
-    ...connectionPointAddressSchema.shape.ponto.shape,
-  }),
+  plano: connectionPointPlanSchema,
+  microtik: connectionPointMicrotikSchema,
+  endereco: connectionPointAddressSchema,
 });
 
-export const connectionPointUpdateSchema = z.object({
-  ponto: z.object({
-    ...connectionPointPlanSchema.shape.ponto.shape, // sem senhaMK
-    ...connectionPointAddressSchema.shape.ponto.shape,
-  }),
-});
+export type TConnectionPointCreate = z.infer<typeof connectionPointFullSchema>;
 
-export type TCreateConnectionPoint = z.infer<typeof connectionPointFullSchema>;
-export type TUpdateConnectionPoint = z.infer<
-  typeof connectionPointUpdateSchema
+// Para criar e atualizar
+export type TConnectionPointPlan = z.infer<typeof connectionPointPlanSchema>;
+
+export type TConnectionPointAddress = z.infer<
+  typeof connectionPointAddressSchema
+>;
+
+export type TConnectionPointMicrotik = z.infer<
+  typeof connectionPointMicrotikSchema
 >;
