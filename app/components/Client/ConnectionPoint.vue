@@ -1,10 +1,10 @@
 <template>
-  <UModal :title="title" class="max-w-2xl">
+  <UModal title="Novo Ponto">
     <template #body="{ close }">
       <UForm
+        :state="stepStates[currentStepIndex]"
         :schema="stepSchemas[currentStepIndex]"
-        :state="state"
-        class="space-y-6 mx-auto"
+        class="space-y-6 max-w-2xl mx-auto"
         @submit.prevent="onSubmit(close)"
         ref="form"
         :disabled="isLoading"
@@ -16,33 +16,27 @@
           :disabled="true"
         >
           <template #plan>
-            <ClientFormPlan v-model="state.ponto" :is-editing="isEditing" />
+            <ClientFormPlan v-model="state.plano" />
           </template>
 
           <template #address>
-            <ClientFormAddress
-              v-model="state.ponto.endereco"
-              :is-editing="isEditing"
-            />
+            <ClientFormAddress v-model="state.endereco" />
+          </template>
+
+          <template #access>
+            <ClientFormMicrotik v-model="state.microtik" />
           </template>
         </UStepper>
 
         <div class="flex justify-between pt-6">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            @click="handleBack(close)"
-            :disabled="isLoading"
-          >
+          <UButton color="neutral" variant="ghost" @click="handleBack(close)">
             {{ isFirstStep ? "Cancelar" : "Voltar" }}
           </UButton>
-
           <UButton v-if="!isLastStep" label="Avançar" @click="handleNext" />
-
           <UButton
             v-else
             type="submit"
-            :label="submitLabel"
+            label="Cadastrar"
             :loading="isLoading"
           />
         </div>
@@ -55,26 +49,23 @@
 import type { StepperItem } from "@nuxt/ui";
 import {
   connectionPointAddressSchema,
-  connectionPointPlanCreateSchema,
+  connectionPointMicrotikSchema,
   connectionPointPlanSchema,
-  type TCreateConnectionPoint,
-  type TUpdateConnectionPoint,
+  type TConnectionPointCreate,
 } from "~/schema/connectionPoint";
 import { connectionPointService } from "~/services/connectionPoint";
-const { successToast, errorToast } = useAppToast();
+const toast = useToast();
+
+const emit = defineEmits(["refresh"]);
 
 const props = defineProps({
-  clientId: { type: String },
-  connectionPointId: { type: String },
-  pointToEdit: {
-    type: Object as PropType<TUpdateConnectionPoint>,
-  },
+  clientId: { type: String, required: true },
 });
 
 const items = [
   {
     slot: "plan" as const,
-    title: "Plano e Acesso",
+    title: "Plano",
     icon: "lucide:wifi",
   },
   {
@@ -82,44 +73,51 @@ const items = [
     title: "Endereço",
     icon: "lucide:map-pin",
   },
+  {
+    slot: "access" as const,
+    title: "Acesso",
+    icon: "lucide:lock-keyhole",
+  },
 ] satisfies StepperItem[];
 
-const form = ref();
+const stepSchemas = [
+  connectionPointPlanSchema,
+  connectionPointAddressSchema,
+  connectionPointMicrotikSchema,
+];
 
-const defaultState = (): TCreateConnectionPoint => ({
-  ponto: {
+const stepStates = computed(() => [
+  state.plano,
+  state.endereco,
+  state.microtik,
+]);
+
+const state = reactive<TConnectionPointCreate>({
+  plano: {
     planoId: "",
-    diaVencimento: 5,
-    loginMK: "",
+    diaVencimento: 10,
+  },
+  microtik: {
     senhaMK: "",
-    endereco: {
-      tipoEndereco: "URBANO",
-      cep: "",
-      cidade: "",
-      bairro: "",
-      rua: "",
-      numero: undefined as unknown as number,
-    },
+    loginMK: "",
+  },
+  endereco: {
+    tipoEndereco: "URBANO",
+    cep: "",
+    cidade: "",
+    bairro: "",
+    rua: "",
+    numero: 0,
+    complemento: "",
+    latitude: undefined,
+    longitude: undefined,
   },
 });
 
-const state = reactive<TCreateConnectionPoint>(defaultState());
+const form = ref();
+const isLoading = ref<boolean>(false);
+const currentStepIndex = ref<number>(0);
 
-const originalState = ref<TUpdateConnectionPoint | {}>({});
-
-const currentStepIndex = ref(0);
-
-const isEditing = computed(() => !!props.pointToEdit);
-
-const stepSchemas = computed(() => [
-  isEditing.value ? connectionPointPlanSchema : connectionPointPlanCreateSchema,
-  connectionPointAddressSchema,
-]);
-
-const title = computed(() =>
-  isEditing.value ? "Editando Ponto" : "Adicionando Ponto",
-);
-const submitLabel = computed(() => (isEditing.value ? "Salvar" : "Adicionar"));
 const isFirstStep = computed(() => currentStepIndex.value === 0);
 const isLastStep = computed(() => currentStepIndex.value === items.length - 1);
 
@@ -144,8 +142,6 @@ const handleNext = async () => {
   }
 };
 
-const isLoading = ref<boolean>(false);
-
 const onSubmit = async (close: () => void) => {
   try {
     await form.value?.validate();
@@ -153,43 +149,26 @@ const onSubmit = async (close: () => void) => {
     return;
   }
 
-  isLoading.value = true;
-
   try {
-    if (isEditing.value) {
-      const payload = getChangedFields(
-        originalState.value as Record<string, unknown>,
-        state as Record<string, unknown>,
-      ) as TUpdateConnectionPoint;
+    isLoading.value = true;
 
-      if (Object.keys(payload).length === 0) {
-        close();
-        return;
-      }
+    await connectionPointService.create(props.clientId, state);
 
-      await connectionPointService.update(props.connectionPointId!, payload);
-    } else {
-      await connectionPointService.create(props.clientId!, state);
-    }
-
-    successToast(
-      isEditing.value ? "Ponto atualizado." : "Novo ponto adicionado.",
-    );
-    close();
+    toast.add({
+      description: "Novo ponto adicionado.",
+      color: "success",
+    });
   } catch (error) {
-    errorToast(error);
+    toast.add({
+      description: getErrorMessage(error),
+      color: "error",
+    });
   } finally {
     isLoading.value = false;
+    emit("refresh");
+    close();
   }
 };
-
-watchEffect(() => {
-  if (props.pointToEdit) {
-    Object.assign(state, props.pointToEdit);
-
-    originalState.value = structuredClone(toRaw(props.pointToEdit));
-  }
-});
 </script>
 
 <style scoped></style>

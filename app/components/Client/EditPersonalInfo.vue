@@ -43,7 +43,6 @@ const props = defineProps({
 });
 
 const state = reactive<TClientUpdateInfo>({
-  cpf: props.clientToEdit.cpf,
   nome: props.clientToEdit.nome,
   email: props.clientToEdit.email,
   telefone: props.clientToEdit.telefone,

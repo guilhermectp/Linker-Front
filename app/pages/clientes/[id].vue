@@ -228,7 +228,6 @@ import {
   ENUM_STATUS_POINT,
   STATUS_POINT,
 } from "~/constants/enumConnectionPoint";
-import type { TUpdateConnectionPoint } from "~/schema/connectionPoint";
 import type { TGetCliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
 const overlay = useOverlay();
@@ -273,18 +272,21 @@ const openAddConnectionPoint = () => {
   const modal = overlay.create(ConnectionPoint);
   modal.open({
     clientId: id.value as string,
+    onRefresh: async () => {
+      await refresh();
+    },
   });
 };
 
-const getFormattedPoint = (point: TGetPontoConexao): TUpdateConnectionPoint => {
-  const { plano, ...rest } = point;
-  return {
-    ponto: {
-      planoId: plano.id!,
-      ...rest,
-    },
-  };
-};
+// const getFormattedPoint = (point: TGetPontoConexao): TUpdateConnectionPoint => {
+//   const { plano, ...rest } = point;
+//   return {
+//     ponto: {
+//       planoId: plano.id!,
+//       ...rest,
+//     },
+//   };
+// };
 
 const getPointActions = (ponto: TGetPontoConexao) => {
   const actions: any[] = [];
@@ -294,12 +296,12 @@ const getPointActions = (ponto: TGetPontoConexao) => {
       label: "Editar Ponto",
       icon: "lucide:pencil",
       onSelect: () => {
-        const modal = overlay.create(ConnectionPoint);
-        modal.open({
-          clientId: id.value as string,
-          connectionPointId: ponto.id as string,
-          pointToEdit: getFormattedPoint(ponto),
-        });
+        // const modal = overlay.create(ConnectionPoint);
+        // modal.open({
+        //   clientId: id.value as string,
+        //   // connectionPointId: ponto.id as string,
+        //   // pointToEdit: getFormattedPoint(ponto),
+        // });
       },
     },
   ];

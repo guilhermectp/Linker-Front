@@ -15,7 +15,7 @@ export type TGetCliente = {
 
 // Criar Cliente
 export type TFormCliente = {
-  cpf: string;
+  cpf?: string;
   nome: string;
   email: string;
   telefone: string;

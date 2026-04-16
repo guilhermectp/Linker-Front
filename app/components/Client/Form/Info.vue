@@ -1,8 +1,12 @@
 <template>
   <div class="bg-muted border border-accented rounded-lg p-4 space-y-6">
-    <UFormField label="CPF" name="cpf" :required="!isEditMode">
+    <UFormField
+      v-if="!isEditMode"
+      label="CPF"
+      name="cpf"
+      :required="!isEditMode"
+    >
       <UInput
-        v-if="!isEditMode"
         v-model="model.cpf"
         class="w-full"
         size="lg"
