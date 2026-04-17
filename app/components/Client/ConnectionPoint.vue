@@ -158,6 +158,9 @@ const onSubmit = async (close: () => void) => {
       description: "Novo ponto adicionado.",
       color: "success",
     });
+
+    emit("refresh");
+    close();
   } catch (error) {
     toast.add({
       description: getErrorMessage(error),
@@ -165,8 +168,6 @@ const onSubmit = async (close: () => void) => {
     });
   } finally {
     isLoading.value = false;
-    emit("refresh");
-    close();
   }
 };
 </script>

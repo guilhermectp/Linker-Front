@@ -4,20 +4,30 @@
       <UInput v-model="model.loginMK" class="w-full" />
     </UFormField>
 
-    <UFormField label="Senha do Microtik" name="senhaMK" required>
+    <UFormField
+      label="Senha do Microtik"
+      name="senhaMK"
+      :required="!isEditMode"
+    >
       <UInput v-model="model.senhaMK" class="w-full" />
     </UFormField>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { TConnectionPointMicrotik } from "~/schema/connectionPoint";
+import type {
+  TConnectionPointMicrotik,
+  TConnectionPointUpdateMicrotik,
+} from "~/schema/connectionPoint";
 
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<TConnectionPointMicrotik>,
+    type: Object as PropType<
+      TConnectionPointMicrotik | TConnectionPointUpdateMicrotik
+    >,
     required: true,
   },
+  isEditMode: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["update:modelValue"]);

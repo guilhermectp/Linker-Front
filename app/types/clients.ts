@@ -13,7 +13,7 @@ export type TGetCliente = {
   pontos: TGetPontoConexao[];
 };
 
-// Criar Cliente
+// Form Cliente
 export type TFormCliente = {
   cpf?: string;
   nome: string;

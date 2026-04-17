@@ -221,8 +221,11 @@
 
 <script setup lang="ts">
 import ConnectionPoint from "~/components/Client/ConnectionPoint.vue";
+import EditAccess from "~/components/Client/EditAccess.vue";
+import EditAddress from "~/components/Client/EditAddress.vue";
 import EditPassword from "~/components/Client/EditPassword.vue";
 import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
+import EditPlan from "~/components/Client/EditPlan.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import {
   ENUM_STATUS_POINT,
@@ -278,30 +281,45 @@ const openAddConnectionPoint = () => {
   });
 };
 
-// const getFormattedPoint = (point: TGetPontoConexao): TUpdateConnectionPoint => {
-//   const { plano, ...rest } = point;
-//   return {
-//     ponto: {
-//       planoId: plano.id!,
-//       ...rest,
-//     },
-//   };
-// };
-
 const getPointActions = (ponto: TGetPontoConexao) => {
   const actions: any[] = [];
 
   const mainActions = [
     {
-      label: "Editar Ponto",
-      icon: "lucide:pencil",
+      label: "Alterar Plano",
+      icon: "lucide:wifi",
       onSelect: () => {
-        // const modal = overlay.create(ConnectionPoint);
-        // modal.open({
-        //   clientId: id.value as string,
-        //   // connectionPointId: ponto.id as string,
-        //   // pointToEdit: getFormattedPoint(ponto),
-        // });
+        const modal = overlay.create(EditPlan);
+        modal.open({
+          connectionPointId: ponto.id as string,
+          currentPlan: {
+            planoId: ponto.plano.id!,
+            diaVencimento: ponto.diaVencimento,
+          },
+        });
+      },
+    },
+    {
+      label: "Editar Endereço",
+      icon: "lucide:map-pin",
+      onSelect: () => {
+        const modal = overlay.create(EditAddress);
+        modal.open({
+          connectionPointId: ponto.id as string,
+          currentAddress: ponto.endereco,
+        });
+      },
+    },
+
+    {
+      label: "Alterar Acesso",
+      icon: "lucide:lock-keyhole",
+      onSelect: () => {
+        const modal = overlay.create(EditAccess);
+        modal.open({
+          connectionPointId: ponto.id as string,
+          currentLogin: ponto.loginMK,
+        });
       },
     },
   ];

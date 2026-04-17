@@ -18,7 +18,7 @@ export const planCreateSchema = z.object({
     .trim()
     .max(100, "Descrição muito longa")
     .nullish()
-    .transform((v) => (v === "" || v == null ? null : v)),
+    .transform((v) => (v === "" || v == null ? undefined : v)),
   valor: z
     .number("Valor é obrigatório")
     .min(0, "Precisa ser ao menos 0")
@@ -46,7 +46,7 @@ export const planUpdateSchema = z.object({
     .trim()
     .max(100, "Descrição muito longa")
     .nullish()
-    .transform((v) => (v === "" || v == null ? null : v))
+    .transform((v) => (v === "" || v == null ? undefined : v))
     .optional(),
   valor: z
     .number("Valor é obrigatório")

@@ -1,8 +1,8 @@
 export type TPlan = {
-  id?: string;
+  id: string;
   nome: string;
   uploadMB: number;
   downloadMB: number;
   valor: number;
-  descricao?: string;
+  descricao: string;
 };

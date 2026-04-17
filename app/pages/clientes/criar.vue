@@ -161,6 +161,8 @@ const onSubmit = async () => {
       description: "Cliente cadastrado com sucesso.",
       color: "success",
     });
+
+    navigateTo(`/clientes`);
   } catch (error) {
     toast.add({
       description: getErrorMessage(error),
@@ -168,7 +170,6 @@ const onSubmit = async () => {
     });
   } finally {
     isLoading.value = false;
-    navigateTo(`/clientes`);
   }
 };
 </script>
