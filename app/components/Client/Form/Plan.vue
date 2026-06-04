@@ -40,7 +40,7 @@ const model = computed({
   set: (val) => emit("update:modelValue", val),
 });
 
-const { data, status } = await asyncFetch<TPlan[]>(
+const { data, status } = await useAsyncApi<TPlan[]>(
   "plans-fetch-all-select",
   "/planos",
   {

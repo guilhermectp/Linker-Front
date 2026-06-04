@@ -113,7 +113,7 @@ const page = ref<number>(0);
 const itemsPerPage = ref<number>(10);
 const totalElements = ref<number>(100);
 
-const { data, status, error, refresh } = await asyncFetch<any>(
+const { data, status, error, refresh } = await useAsyncApi<any>(
   "clients-fetch-all-page",
   "/clientes",
 );

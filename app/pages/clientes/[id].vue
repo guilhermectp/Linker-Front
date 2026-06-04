@@ -243,7 +243,7 @@ const {
   status,
   error,
   refresh,
-} = await asyncFetch<TGetCliente>(
+} = await useAsyncApi<TGetCliente>(
   `get-client-id-${id.value}`,
   `/clientes/${id.value}`,
 );

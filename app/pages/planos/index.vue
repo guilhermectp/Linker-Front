@@ -81,7 +81,7 @@ const totalElements = ref<number>(100);
 
 const globalFilter = ref("");
 
-const { data, status, error, refresh } = await asyncFetch<any>(
+const { data, status, error, refresh } = await useAsyncApi<any>(
   `plans-fetch-all-page`,
   "/planos",
 );

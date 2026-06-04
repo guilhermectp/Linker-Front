@@ -7,13 +7,13 @@ import type {
 
 export const clientService = {
   async getById(clientId: string) {
-    return apiFetch(`/clientes/${clientId}`, {
+    return useApi(`/clientes/${clientId}`, {
       method: "GET",
     });
   },
 
   async create(newClient: TClientCreate) {
-    return apiFetch("/clientes", {
+    return useApi("/clientes", {
       method: "POST",
       body: newClient,
     });
@@ -23,7 +23,7 @@ export const clientService = {
     clientId: string,
     updatedClient: Partial<TClientUpdateInfo>,
   ) {
-    return apiFetch(`/clientes/atualizar/${clientId}`, {
+    return useApi(`/clientes/atualizar/${clientId}`, {
       method: "PATCH",
       body: updatedClient,
     });
@@ -33,7 +33,7 @@ export const clientService = {
     clientId: string,
     newPassword: TClientUpdatePassword,
   ) {
-    return apiFetch(`/clientes/atualizar-senha/${clientId}`, {
+    return useApi(`/clientes/atualizar-senha/${clientId}`, {
       method: "PUT",
       body: newPassword,
     });
@@ -44,7 +44,7 @@ export const clientService = {
   //   pointId: string,
   //   updatedPoint: TClientUpdateConnectionPoint,
   // ) {
-  //   return apiFetch(`/clientes/atualizar-ponto/${clientId}/${pointId}`, {
+  //   return useApi(`/clientes/atualizar-ponto/${clientId}/${pointId}`, {
   //     method: "PUT",
   //     body: updatedPoint,
   //   });

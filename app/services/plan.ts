@@ -2,21 +2,21 @@ import type { TPlanCreate, TPlanUpdate } from "~/schema/plan.create";
 
 export const planService = {
   async create(newPlan: TPlanCreate) {
-    return apiFetch("/planos", {
+    return useApi("/planos", {
       method: "POST",
       body: newPlan,
     });
   },
 
   async update(namePlan: string, updatedPlan: TPlanUpdate) {
-    return apiFetch(`/planos/${namePlan}`, {
+    return useApi(`/planos/${namePlan}`, {
       method: "PATCH",
       body: updatedPlan,
     });
   },
 
   async delete(namePlan: string) {
-    return apiFetch(`/planos/${namePlan}`, {
+    return useApi(`/planos/${namePlan}`, {
       method: "DELETE",
     });
   },

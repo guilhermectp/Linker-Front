@@ -23,7 +23,7 @@ const getFetchOptions = (customOptions: NitroFetchOptions<any>) => {
   };
 };
 
-export const asyncFetch = <T = unknown>(
+export const useAsyncApi = <T = unknown>(
   key: MaybeRefOrGetter<string>,
   path: string,
   options: TAsyncApiOptions<T> = {},
@@ -87,7 +87,7 @@ export const asyncFetch = <T = unknown>(
   );
 };
 
-export const apiFetch = async <T = unknown>(
+export const useApi = async <T = unknown>(
   path: string,
   options: TApiOptions = {},
 ): Promise<T> => {

@@ -7,21 +7,21 @@ import type {
 
 export const connectionPointService = {
   create(clientId: string, data: TConnectionPointCreate) {
-    return apiFetch(`/ponto-conexao/${clientId}`, {
+    return useApi(`/ponto-conexao/${clientId}`, {
       method: "POST",
       body: data,
     });
   },
 
   updatePlan(connectionPointId: string, data: TConnectionPointPlan) {
-    return apiFetch(`/ponto-conexao/plano/${connectionPointId}`, {
+    return useApi(`/ponto-conexao/plano/${connectionPointId}`, {
       method: "PATCH",
       body: data,
     });
   },
 
   updateAddress(connectionPointId: string, data: TConnectionPointAddress) {
-    return apiFetch(`/ponto-conexao/endereco/${connectionPointId}`, {
+    return useApi(`/ponto-conexao/endereco/${connectionPointId}`, {
       method: "PATCH",
       body: data,
     });
@@ -31,7 +31,7 @@ export const connectionPointService = {
     connectionPointId: string,
     data: TConnectionPointUpdateMicrotik,
   ) {
-    return apiFetch(`/ponto-conexao/acesso/${connectionPointId}`, {
+    return useApi(`/ponto-conexao/microtik/${connectionPointId}`, {
       method: "PATCH",
       body: data,
     });
