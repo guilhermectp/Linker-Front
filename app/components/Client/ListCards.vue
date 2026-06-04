@@ -23,12 +23,7 @@
     </div>
   </div>
 
-  <FetchError
-    v-if="error || data.length === 0"
-    :type="error ? 'error' : 'empty'"
-    :message="error ? getErrorMessage(error) : emptyMessage"
-    @retry="emit('refresh')"
-  />
+  <UIRequestError v-if="error" :error="error" @retry="emit('retry')" />
 
   <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
     <UCard
@@ -106,10 +101,7 @@ import type { TRequestError } from "~/types/requests";
 import type { TGetCliente } from "~/types/clients";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 
-const toast = useToast();
-const overlay = useOverlay();
-
-const emit = defineEmits(["update:page", "refresh"]);
+const emit = defineEmits(["update:page", "retry"]);
 
 const props = defineProps<{
   loading?: boolean;
@@ -120,10 +112,6 @@ const props = defineProps<{
   totalElements: number;
   ui?: any;
 }>();
-
-const emptyMessage = computed(() => {
-  return getErrorMessage(props.error) ?? "Nenhum cliente encontrado";
-});
 </script>
 
 <style scoped></style>

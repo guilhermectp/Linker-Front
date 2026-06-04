@@ -1,10 +1,10 @@
 <template>
   <template v-if="status === 'pending'">
-    <FetchLoading message="Buscando dados do cliente..." />
+    <UIRequestLoader message="Buscando dados do cliente..." />
   </template>
 
   <template v-if="error">
-    <FetchError :message="getErrorMessage(error)" @retry="refresh" />
+    <UIRequestError :error="error" @retry="refresh" />
   </template>
 
   <div v-if="client" class="space-y-6">

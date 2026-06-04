@@ -7,11 +7,11 @@
     v-model:column-visibility="columnVisibility"
   >
     <template #loading>
-      <FetchLoading message="Carregando..." />
+      <UIRequestLoader message="Carregando..." />
     </template>
 
     <template #empty>
-      <FetchError :type="typeError" :message="message" @retry="emit('retry')" />
+      <UIRequestError :error="error" @retry="emit('retry')" />
     </template>
 
     <template v-if="$slots.expanded" #expanded="{ row }">
@@ -35,7 +35,6 @@
 import type { TableColumn } from "@nuxt/ui";
 import type { VisibilityState } from "@tanstack/vue-table";
 import type { TRequestError } from "~/types/requests";
-import FetchLoading from "../FetchLoading.vue";
 
 const props = defineProps<{
   loading?: boolean;
@@ -69,14 +68,6 @@ const hasData = computed(
 const hasError = computed(
   () => !!props.error && getErrorStatus(props.error) !== 404,
 );
-
-const typeError = computed(() => (hasError.value ? "error" : "empty"));
-
-const message = computed(() => {
-  return hasError.value
-    ? getErrorMessage(props.error)
-    : (props.emptyMessage ?? "Nenhum resultado encontrado.");
-});
 
 watch(
   () => props.columnVisibility,

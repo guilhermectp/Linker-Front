@@ -26,12 +26,7 @@
     </div>
   </div>
 
-  <FetchError
-    v-if="error || data.length === 0"
-    :type="error ? 'error' : 'empty'"
-    :message="error ? getErrorMessage(error) : emptyMessage"
-    @retry="emit('refresh')"
-  />
+  <UIRequestError v-if="error" :error="error" @retry="emit('refresh')" />
 
   <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
     <UCard
@@ -144,10 +139,6 @@ const props = defineProps<{
   totalElements: number;
   ui?: any;
 }>();
-
-const emptyMessage = computed(() => {
-  return getErrorMessage(props.error) ?? "Nenhum plano encontrado";
-});
 
 const formatCurrency = (val: number | string) =>
   new Intl.NumberFormat("pt-BR", {

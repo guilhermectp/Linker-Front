@@ -66,7 +66,7 @@
         :items-per-page="itemsPerPage"
         :total-elements="totalElements"
         @update:page="page = $event"
-        @refresh="refresh"
+        @retry="refresh"
       />
     </template>
   </div>

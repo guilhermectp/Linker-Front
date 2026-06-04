@@ -195,14 +195,14 @@ const getRowItems = (row: Row<TPlan>) => {
 
 const openFormModalToCreate = () => {
   const modal = overlay.create(PlanFormModal);
-  modal.open({ onRefresh: async () => await refresh() });
+  modal.open({ onRefresh: () => refresh() });
 };
 
 const openFormModalToEdit = (plan: TPlan) => {
   const modal = overlay.create(PlanFormModal);
   modal.open({
     plan: plan,
-    onRefresh: async () => await refresh(),
+    onRefresh: () => refresh(),
   });
 };
 
@@ -210,7 +210,7 @@ const openDeleteModal = (plan: TPlan) => {
   const modal = overlay.create(PlanDeleteModal);
   modal.open({
     plan: plan,
-    onRefresh: async () => await refresh(),
+    onRefresh: () => refresh(),
   });
 };
 </script>
