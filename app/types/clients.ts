@@ -1,15 +1,22 @@
 import type { TGetPontoConexao } from "./connectionPoint";
 
-export type TClienteStatus = "ATIVO" | "SUSPENSO" | "INATIVO";
+// Tipagens de request
 
-export type TGetCliente = {
+// export type FetchClient {
+//   clientes: Client[];
+//   count | totalPages | totalElements
+// }
+
+export type ClienteStatus = "ATIVO" | "SUSPENSO" | "INATIVO";
+
+export type GetCliente = {
   id: string;
   nome: string;
   cpf: string;
   email: string;
   telefone: string;
   senhaCentralCliente: string;
-  status: TClienteStatus;
+  status: ClienteStatus;
   pontos: TGetPontoConexao[];
 };
 

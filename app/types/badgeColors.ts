@@ -1,4 +1,4 @@
-export type TBadgeColor =
+export type UINuxtColors =
   | "neutral"
   | "primary"
   | "secondary"
@@ -7,8 +7,8 @@ export type TBadgeColor =
   | "warning"
   | "error";
 
-export type TStatusConfig = {
+export type StatusConfig = {
   label: string;
-  color: TBadgeColor;
+  color: UINuxtColors;
   short?: string;
 };

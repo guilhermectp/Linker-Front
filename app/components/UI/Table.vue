@@ -1,73 +1,81 @@
 <template>
-  <UTable
-    :data="data"
-    :loading="loading"
-    :columns="columns"
-    :ui="mergedUi"
-    v-model:column-visibility="columnVisibility"
-  >
-    <template #loading>
-      <UIRequestLoader message="Carregando..." />
-    </template>
+  <div class="mt-3 space-y-4">
+    <UTable
+      :data="data"
+      :loading="loading"
+      :columns="columns"
+      :ui="mergedUi"
+      v-model:column-visibility="columnVisibility"
+      v-model:row-selection="internalRowSelection"
+      :get-row-id="(row: any) => row.id"
+    >
+      <template #loading>
+        <UIRequestLoader message="Carregando..." />
+      </template>
 
-    <template #empty>
-      <UIRequestError :error="error" @retry="emit('retry')" />
-    </template>
+      <template #empty>
+        <UIRequestError :error="error" @retry="emit('retry')" />
+      </template>
 
-    <template v-if="$slots.expanded" #expanded="{ row }">
-      <slot name="expanded" :row="row"></slot>
-    </template>
+      <template v-if="$slots.expanded" #expanded="{ row }">
+        <slot name="expanded" :row="getRow(row)"></slot>
+      </template>
 
-    <slot />
-  </UTable>
+      <slot />
+    </UTable>
 
-  <div v-if="hasData" class="flex justify-center py-4">
     <UPagination
+      v-if="hasData"
       :page="page + 1"
       :items-per-page="itemsPerPage"
       :total="totalElements"
       @update:page="(p: number) => emit('update:page', p - 1)"
+      class="flex justify-center"
     />
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import type { TableColumn } from "@nuxt/ui";
 import type { VisibilityState } from "@tanstack/vue-table";
-import type { TRequestError } from "~/types/requests";
 
-const props = defineProps<{
-  loading?: boolean;
-  data: any[];
-  error?: TRequestError;
-  emptyMessage?: string;
-  columns: TableColumn<any>[];
-  page: number;
-  itemsPerPage: number;
-  totalElements: number;
-  ui?: any;
-  columnVisibility?: VisibilityState | undefined;
-}>();
+const props = withDefaults(
+  defineProps<{
+    loading?: boolean;
+    data: T[];
+    error?: any;
+    page: number;
+    itemsPerPage?: number;
+    totalElements?: number;
+    ui?: any;
+    columns: TableColumn<T>[];
+    columnVisibility?: VisibilityState | undefined;
+    rowSelection?: Record<string, boolean> | undefined;
+  }>(),
+  {
+    itemsPerPage: 10,
+    totalElements: undefined,
+  },
+);
+
+const totalElements = computed(() => props.totalElements ?? props.data.length);
 
 const columnVisibility = ref(props.columnVisibility);
 
-const emit = defineEmits(["update:page", "page", "retry"]);
+const internalRowSelection = ref(props.rowSelection);
+
+const emit = defineEmits([
+  "update:page",
+  "page",
+  "retry",
+  "update:rowSelection",
+]);
 
 const mergedUi = computed(() => ({
-  // root: "shadow-sm border border-default rounded-xl",
-  // tr: "hover:bg-elevated/80 dark:hover:bg-neutral-500/10 transition-all cursor-pointer",
-  // th: "font-mono uppercase text-muted bg-accented tracking-wider text-xs",
-  // td: "text-default text-sm tracking-wide",
   ...props.ui,
 }));
 
-const hasData = computed(
-  () => !props.loading && !hasError.value && props.data.length > 0,
-);
-
-const hasError = computed(
-  () => !!props.error && getErrorStatus(props.error) !== 404,
-);
+const hasData = computed(() => props.data.length > 0);
 
 watch(
   () => props.columnVisibility,
@@ -75,4 +83,19 @@ watch(
     columnVisibility.value = newVal;
   },
 );
+
+watch(internalRowSelection, (val) => {
+  emit("update:rowSelection", val);
+});
+
+watch(
+  () => props.rowSelection,
+  (val) => {
+    if (val) internalRowSelection.value = val;
+  },
+);
+
+const getRow = (row: any) => {
+  return row.original as T;
+};
 </script>

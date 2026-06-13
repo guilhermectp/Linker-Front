@@ -1,13 +1,13 @@
-import type { TStatusConfig } from "~/types/badgeColors";
-import type { TClienteStatus } from "~/types/clients";
+import type { StatusConfig } from "~/types/badgeColors";
+import type { ClienteStatus } from "~/types/clients";
 
-export const ENUM_STATUS_CLIENT: Record<TClienteStatus, string> = {
+export const ENUM_STATUS_CLIENT: Record<ClienteStatus, string> = {
   ATIVO: "ATIVO",
   SUSPENSO: "SUSPENSO",
   INATIVO: "INATIVO",
 };
 
-export const STATUS_CLIENT: Record<TClienteStatus, TStatusConfig> = {
+export const STATUS_CLIENT: Record<ClienteStatus, StatusConfig> = {
   ATIVO: {
     label: "Ativo",
     color: "success",

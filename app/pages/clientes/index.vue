@@ -47,7 +47,7 @@
     <template v-if="currentView === 'table'">
       <UITable
         :loading="status === 'pending'"
-        :data="data"
+        :data="data || []"
         :error="error"
         :columns="columns"
         :page="page"
@@ -60,7 +60,7 @@
     <template v-else>
       <ClientListCards
         :loading="status === 'pending'"
-        :data="data"
+        :data="data || []"
         :error="error"
         :page="page"
         :items-per-page="itemsPerPage"
@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import type { SelectItem, TableColumn } from "@nuxt/ui";
-import type { TGetCliente } from "~/types/clients";
+import type { GetCliente } from "~/types/clients";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 
@@ -113,12 +113,12 @@ const page = ref<number>(0);
 const itemsPerPage = ref<number>(10);
 const totalElements = ref<number>(100);
 
-const { data, status, error, refresh } = await useAsyncApi<any>(
+const { data, status, error, refresh } = await useAsyncApi<GetCliente[]>(
   "clients-fetch-all-page",
   "/clientes",
 );
 
-const columns: TableColumn<TGetCliente>[] = [
+const columns: TableColumn<GetCliente>[] = [
   {
     accessorKey: "nome",
     header: "Nome",

@@ -98,14 +98,14 @@
 
 <script setup lang="ts">
 import type { TRequestError } from "~/types/requests";
-import type { TGetCliente } from "~/types/clients";
+import type { GetCliente } from "~/types/clients";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 
 const emit = defineEmits(["update:page", "retry"]);
 
 const props = defineProps<{
   loading?: boolean;
-  data: TGetCliente[];
+  data: GetCliente[];
   error?: TRequestError;
   page: number;
   itemsPerPage: number;

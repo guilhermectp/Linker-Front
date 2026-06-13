@@ -1,4 +1,4 @@
-import type { TStatusConfig } from "~/types/badgeColors";
+import type { StatusConfig } from "~/types/badgeColors";
 import type { TPontoConexaoStatus } from "~/types/connectionPoint";
 
 export const ENUM_STATUS_POINT: Record<TPontoConexaoStatus, string> = {
@@ -8,7 +8,7 @@ export const ENUM_STATUS_POINT: Record<TPontoConexaoStatus, string> = {
   CANCELADO: "CANCELADO",
 };
 
-export const STATUS_POINT: Record<TPontoConexaoStatus, TStatusConfig> = {
+export const STATUS_POINT: Record<TPontoConexaoStatus, StatusConfig> = {
   ATIVO: {
     label: "Ativo",
     color: "success",

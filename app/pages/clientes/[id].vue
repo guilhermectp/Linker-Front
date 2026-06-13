@@ -231,7 +231,7 @@ import {
   ENUM_STATUS_POINT,
   STATUS_POINT,
 } from "~/constants/enumConnectionPoint";
-import type { TGetCliente } from "~/types/clients";
+import type { GetCliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
 const overlay = useOverlay();
 const route = useRoute();
@@ -243,7 +243,7 @@ const {
   status,
   error,
   refresh,
-} = await useAsyncApi<TGetCliente>(
+} = await useAsyncApi<GetCliente>(
   `get-client-id-${id.value}`,
   `/clientes/${id.value}`,
 );

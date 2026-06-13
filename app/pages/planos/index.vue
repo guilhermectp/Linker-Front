@@ -34,7 +34,7 @@
     <template v-if="currentView === 'table'">
       <UITable
         :loading="status === 'pending'"
-        :data="data"
+        :data="data || []"
         :error="error"
         :columns="columns"
         :page="page"
@@ -47,7 +47,7 @@
     <template v-else>
       <PlanListCards
         :loading="status === 'pending'"
-        :data="data"
+        :data="data || []"
         :error="error"
         :page="page"
         :items-per-page="itemsPerPage"
@@ -81,7 +81,7 @@ const totalElements = ref<number>(100);
 
 const globalFilter = ref("");
 
-const { data, status, error, refresh } = await useAsyncApi<any>(
+const { data, status, error, refresh } = await useAsyncApi<TPlan[]>(
   `plans-fetch-all-page`,
   "/planos",
 );
