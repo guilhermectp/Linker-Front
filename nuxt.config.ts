@@ -29,6 +29,15 @@ export default defineNuxtConfig({
     },
   },
 
+   vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ]
+    }
+  }
+
   // app: {
   //   pageTransition: { name: "page", mode: "out-in" },
   // },

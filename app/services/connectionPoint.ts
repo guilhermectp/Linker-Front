@@ -36,4 +36,10 @@ export const connectionPointService = {
       body: data,
     });
   },
+
+  delete(connectionPointId: string) {
+    return useApi(`ponto-conexao/${connectionPointId}`, {
+      method: "DELETE",
+    });
+  },
 };

@@ -52,7 +52,6 @@ import {
   type TClientUpdatePassword,
 } from "~/schema/client";
 import { clientService } from "~/services/client";
-const { successToast, errorToast } = useAppToast();
 
 const props = defineProps({
   clientId: { type: String, required: true },
@@ -75,10 +74,10 @@ const onSubmit = async (close: () => void) => {
     };
 
     await clientService.updateCustomerCentralPassword(props.clientId, payload);
-    successToast("Senha alterada com sucesso.");
+    Toast.success("Senha alterada com sucesso.");
     close();
   } catch (error) {
-    errorToast(error);
+    Toast.error(error);
   } finally {
     isLoading.value = false;
   }

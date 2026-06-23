@@ -1,4 +1,4 @@
-import type { StatusConfig } from "~/types/badgeColors";
+import type { StatusConfig } from "~/types/ui";
 import type { ClienteStatus } from "~/types/clients";
 
 export const ENUM_STATUS_CLIENT: Record<ClienteStatus, string> = {

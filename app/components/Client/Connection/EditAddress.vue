@@ -80,6 +80,11 @@ const onSubmit = async (close: () => void) => {
     isLoading.value = false;
   }
 };
+
+onMounted(() => {
+  console.log(props.currentAddress);
+  if (props.currentAddress) Object.assign(state, props.currentAddress);
+});
 </script>
 
 <style scoped></style>

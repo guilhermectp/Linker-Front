@@ -30,7 +30,6 @@ import {
   type TClientUpdateInfo,
 } from "~/schema/client";
 import { clientService } from "~/services/client";
-const { successToast, errorToast } = useAppToast();
 
 const emit = defineEmits(["refresh"]);
 
@@ -62,11 +61,11 @@ const onSubmit = async (close: () => void) => {
     if (state.telefone !== original.telefone) payload.telefone = state.telefone;
 
     await clientService.updateInfo(props.clientId, payload);
-    successToast("Informações alteradas.");
+    Toast.success("Informações alteradas.");
     emit("refresh");
     close();
   } catch (error) {
-    errorToast(error);
+    Toast.error(error);
   } finally {
     isLoading.value = false;
   }
