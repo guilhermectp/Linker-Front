@@ -89,7 +89,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <ClientInvoiceList />
-      <ClientServiceOrderList />
+      <SupportList />
     </div>
   </div>
 </template>
@@ -99,7 +99,7 @@ import AddConnectionPoint from "~/components/Client/AddConnectionPoint.vue";
 import EditPassword from "~/components/Client/EditPassword.vue";
 import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
 import { STATUS_CLIENT } from "~/constants/enumClient";
-import type { GetCliente } from "~/types/clients";
+import type { Cliente } from "~/types/clients";
 const overlay = useOverlay();
 const route = useRoute();
 
@@ -110,7 +110,7 @@ const {
   status,
   error,
   refresh,
-} = await useAsyncApi<GetCliente>(
+} = await useAsyncApi<Cliente>(
   `get-client-id-${id.value}`,
   `/clientes/${id.value}`,
 );

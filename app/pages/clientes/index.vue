@@ -7,20 +7,31 @@
         class="flex-1 min-w-72"
         size="lg"
       />
-      <USelect
+
+      <USelectMenu
         v-model="statusFilter"
         :items="statusItems"
         placeholder="Filtrar por tipo de cadastro"
         class="flex-1 min-w-72"
         size="lg"
+        label-key="label"
+        value-key="value"
+        :search-input="false"
+        clear
       />
-      <USelect
+
+      <USelectMenu
         v-model="addressFilter"
         :items="addressItems"
         placeholder="Filtrar por tipo de endereço"
         class="flex-1 min-w-72"
         size="lg"
+        label-key="label"
+        value-key="value"
+        :search-input="false"
+        clear
       />
+
       <UFieldGroup size="lg" class="">
         <UButton
           color="neutral"
@@ -35,6 +46,7 @@
           @click="currentView = 'cards'"
         />
       </UFieldGroup>
+
       <UButton
         label="Novo"
         icon="i-lucide:plus"
@@ -47,34 +59,91 @@
     <template v-if="currentView === 'table'">
       <UITable
         :loading="status === 'pending'"
-        :data="data || []"
+        :data="data?.data || []"
         :error="error"
         :columns="columns"
         :page="page"
         :items-per-page="itemsPerPage"
         :total-elements="totalElements"
         @update:page="page = $event"
+        @update:items-per-page="itemsPerPage = $event"
         @retry="refresh"
       />
     </template>
     <template v-else>
-      <ClientListCards
+      <UICard
         :loading="status === 'pending'"
-        :data="data || []"
+        :data="data?.data || []"
         :error="error"
         :page="page"
         :items-per-page="itemsPerPage"
         :total-elements="totalElements"
         @update:page="page = $event"
+        @update:items-per-page="itemsPerPage = $event"
         @retry="refresh"
-      />
+      >
+        <template #card-content="{ item }">
+          <div class="flex items-center justify-between mb-2">
+            <h1 class="font-bold text-lg text-highlighted">
+              {{ item.nome }}
+            </h1>
+
+            <UButton
+              class="rounded-md"
+              trailing-icon="lucide:arrow-right"
+              color="info"
+              variant="ghost"
+              aria-label="Actions dropdown"
+              @click="navigateTo(`/clientes/${item.id}`)"
+            />
+          </div>
+
+          <dl class="flex flex-col gap-3">
+            <div class="flex gap-2 text-sm">
+              <dt class="text-muted min-w-18 shrink-0">Email:</dt>
+              <dd class="text-default font-medium">{{ item.email }}</dd>
+            </div>
+            <div class="flex gap-2 text-sm">
+              <dt class="text-muted min-w-18 shrink-0">Telefone:</dt>
+              <dd class="text-default font-medium">{{ item.telefone }}</dd>
+            </div>
+            <div class="flex gap-2 text-sm">
+              <dt class="text-muted min-w-18 shrink-0">Cadastro:</dt>
+              <dd>
+                <UBadge
+                  variant="soft"
+                  :label="STATUS_CLIENT[item.status].label"
+                  :color="STATUS_CLIENT[item.status].color"
+                  class="rounded-full px-4"
+                />
+              </dd>
+            </div>
+            <div class="flex gap-2 text-[13px]">
+              <dt class="text-muted min-w-18 shrink-0">Situação:</dt>
+              <dd
+                class="text-default font-medium break-all flex gap-1 flex-wrap"
+              >
+                <UBadge
+                  v-for="ponto in item.pontos"
+                  v-if="item.status !== 'SUSPENSO'"
+                  :key="ponto.id"
+                  variant="soft"
+                  :label="STATUS_POINT[ponto.status].label"
+                  :color="STATUS_POINT[ponto.status].color"
+                  class="rounded-full px-4"
+                />
+              </dd>
+            </div>
+          </dl>
+        </template>
+      </UICard>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { SelectItem, TableColumn } from "@nuxt/ui";
-import type { GetCliente } from "~/types/clients";
+import type { Cliente, FetchClientes } from "~/types/clients";
 import { STATUS_CLIENT } from "~/constants/enumClient";
 import { STATUS_POINT } from "~/constants/enumConnectionPoint";
 
@@ -88,7 +157,7 @@ const statusItems = ref<SelectItem[]>([
   },
   {
     label: "Desativado",
-    value: "DESATIVADO",
+    value: "INATIVO",
   },
 ]);
 
@@ -104,21 +173,54 @@ const addressItems = ref<SelectItem[]>([
 ]);
 
 const nameOrUsernameFilter = ref("");
-const statusFilter = ref("");
-const addressFilter = ref("");
+const nameOrUsernameFilterDebounced = useDebounce(nameOrUsernameFilter, 600);
+
+const statusFilter = ref<string>("");
+const addressFilter = ref<string>("");
 
 const currentView = ref<"cards" | "table">("table");
 
-const page = ref<number>(0);
+const page = ref<number>(1);
 const itemsPerPage = ref<number>(10);
-const totalElements = ref<number>(100);
+const totalElements = ref<number>(page.value * itemsPerPage.value);
 
-const { data, status, error, refresh } = await useAsyncApi<GetCliente[]>(
-  "clients-fetch-all-page",
-  "/clientes",
+watch([nameOrUsernameFilterDebounced, statusFilter, addressFilter], () => {
+  page.value = 1;
+});
+
+const filtersKey = computed(() =>
+  [
+    "fetch-clients",
+    nameOrUsernameFilterDebounced.value,
+    statusFilter.value,
+    addressFilter.value,
+    page.value,
+    itemsPerPage.value,
+  ].join("-"),
 );
 
-const columns: TableColumn<GetCliente>[] = [
+const { data, status, error, refresh } = await useAsyncApi<FetchClientes>(
+  filtersKey,
+  "/clientes",
+  {
+    query: {
+      pagina: page.value,
+      itemsPorPagina: itemsPerPage.value,
+      busca: () => nameOrUsernameFilterDebounced.value || undefined,
+      situacao: () => statusFilter.value || undefined,
+      tipoEndereco: () => addressFilter.value || undefined,
+    },
+  },
+);
+
+watch(data, (newValue) => {
+  if (newValue) {
+    itemsPerPage.value = newValue.itemsPorPagina;
+    totalElements.value = newValue.total;
+  }
+});
+
+const columns: TableColumn<Cliente>[] = [
   {
     accessorKey: "nome",
     header: "Nome",

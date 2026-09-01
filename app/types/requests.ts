@@ -21,3 +21,10 @@ type TError = {
 };
 
 export type TRequestError = FetchError<TError>;
+
+export interface PaginatedRequest<T> {
+  itemsPorPagina: number;
+  pagina: number;
+  total: number;
+  data: T;
+}

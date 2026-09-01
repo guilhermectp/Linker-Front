@@ -120,7 +120,7 @@ import {
   STATUS_POINT,
 } from "~/constants/enumConnectionPoint";
 import { connectionPointService } from "~/services/connectionPoint";
-import type { GetCliente } from "~/types/clients";
+import type { Cliente } from "~/types/clients";
 import type { TGetPontoConexao } from "~/types/connectionPoint";
 import EditPlan from "~/components/Client/Connection/EditPlan.vue";
 import EditAccess from "~/components/Client/Connection/EditAccess.vue";
@@ -130,7 +130,7 @@ import UIConfirmStatus from "~/components/UI/ConfirmStatus.vue";
 const overlay = useOverlay();
 
 const prosp = defineProps({
-  client: { type: Object as PropType<GetCliente>, required: true },
+  client: { type: Object as PropType<Cliente>, required: true },
 });
 
 const selectedPoint = ref<string | null>(null);

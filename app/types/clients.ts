@@ -1,15 +1,13 @@
 import type { TGetPontoConexao } from "./connectionPoint";
+import type { PaginatedRequest } from "./requests";
 
-// Tipagens de request
+export interface FetchClientes extends PaginatedRequest<Cliente[]> {}
 
-// export type FetchClient {
-//   clientes: Client[];
-//   count | totalPages | totalElements
-// }
+export interface FetchClientesSeletor {
+  data: Cliente[];
+}
 
-export type ClienteStatus = "ATIVO" | "SUSPENSO" | "INATIVO";
-
-export type GetCliente = {
+export interface Cliente {
   id: string;
   nome: string;
   cpf: string;
@@ -18,7 +16,9 @@ export type GetCliente = {
   senhaCentralCliente: string;
   status: ClienteStatus;
   pontos: TGetPontoConexao[];
-};
+}
+
+export type ClienteStatus = "ATIVO" | "SUSPENSO" | "INATIVO";
 
 // Form Cliente
 export type TFormCliente = {

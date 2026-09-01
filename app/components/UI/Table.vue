@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3 space-y-4">
+  <div class="mt-3">
     <UTable
       :data="data"
       :loading="loading"
@@ -24,14 +24,48 @@
       <slot />
     </UTable>
 
-    <UPagination
+    <div
       v-if="hasData"
-      :page="page + 1"
-      :items-per-page="itemsPerPage"
-      :total="totalElements"
-      @update:page="(p: number) => emit('update:page', p - 1)"
-      class="flex justify-center"
-    />
+      class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-center p-4 border border-t-0 border-default rounded-b-md dark:bg-elevated"
+    >
+      <span class="hidden md:inline text-sm text-muted">
+        Página {{ page }} de {{ Math.ceil(totalElements / itemsPerPage) }}
+      </span>
+
+      <div class="flex items-center justify-center">
+        <UPagination
+          :page="page"
+          :items-per-page="itemsPerPage"
+          :total="totalElements"
+          @update:page="(p: number) => emit('update:page', p)"
+        />
+      </div>
+
+      <div
+        class="w-auto flex gap-2 items-center justify-center md:justify-end text-muted text-sm"
+      >
+        <div class="flex items-center gap-2">
+          <Icon name="lucide:database" class="size-4" />
+          <span>
+            <span class="font-medium text-foreground">
+              {{ totalElements.toLocaleString() }}
+            </span>
+            resultados
+          </span>
+        </div>
+
+        <USeparator class="h-4" orientation="vertical" />
+
+        <div class="flex items-center gap-2">
+          <span>Itens</span>
+          <USelect
+            :default-value="itemsPerPage"
+            :items="[10, 15, 20, 25]"
+            @update:modelValue="(v: number) => emit('update:itemsPerPage', v)"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,6 +103,7 @@ const emit = defineEmits([
   "page",
   "retry",
   "update:rowSelection",
+  "update:itemsPerPage",
 ]);
 
 const mergedUi = computed(() => ({
