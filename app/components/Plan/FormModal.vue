@@ -1,5 +1,8 @@
 <template>
-  <UModal title="Criando novo plano" :dismissible="false">
+  <UModal
+    :title="isEditing ? 'Editando plano' : 'Criando novo plano'"
+    :dismissible="false"
+  >
     <template #body="{ close }">
       <UForm
         :schema="activeSchema"

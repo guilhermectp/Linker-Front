@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <UCard variant="subtle">
     <template #header>
       <div class="flex justify-between items-center gap-4">
@@ -105,27 +105,11 @@
 </template>
 
 <script setup lang="ts">
-type TServiceOrder = {
-  id?: string;
-  tipo: "INSTALACAO" | "SUPORTE" | "CANCELAMENTO" | "TROCA_ENDERECO";
-  dataAbertura: string;
-  dataAgendada: string;
-  situacao: "EM_ANDAMENTO" | "FINALIZADA" | "CANCELADA";
-  observacao: string;
-};
-
-const ENUM_TYPE_SERVICE = {
-  INSTALACAO: "Instalação",
-  SUPORTE: "Suporte",
-  CANCELAMENTO: "Retirada",
-  TROCA_ENDERECO: "Troca de Residência",
-};
-
-const ENUM_STATUS_SERVICE = {
-  EM_ANDAMENTO: "Pendente",
-  FINALIZADA: "Finalizada",
-  CANCELADA: "Cancelada",
-};
+import {
+  ENUM_STATUS_SERVICE,
+  ENUM_TYPE_SERVICE,
+} from "~/constants/serviceOrder";
+import type { TServiceOrder } from "~/types/serviceOrder";
 
 const typeConfig = {
   INSTALACAO: {
@@ -201,4 +185,12 @@ const mockServiceOrders: TServiceOrder[] = [
       "Instalação de fibra óptica 300MB. Cliente confirmou recebimento.",
   },
 ];
-</script>
+</script> -->
+
+<template>
+  <div></div>
+</template>
+
+<script setup lang="ts"></script>
+
+<style scoped></style>

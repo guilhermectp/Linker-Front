@@ -9,6 +9,7 @@ export type TPontoConexaoStatus =
 export type TTipoEndereco = "URBANO" | "RURAL";
 
 type TEnderecoBase = {
+  id?: string;
   tipoEndereco: TTipoEndereco;
   latitude?: number;
   longitude?: number;
@@ -30,6 +31,8 @@ type TEnderecoRural = TEnderecoBase & {
   nomeLocal: string;
 };
 
+type Endereco = TEnderecoUrbano | TEnderecoRural;
+
 export type TGetPontoConexao = {
   id: string;
   status: TPontoConexaoStatus;
@@ -38,8 +41,17 @@ export type TGetPontoConexao = {
   loginMK: string;
   senhaMK: string;
   plano: TPlan;
-  endereco: TEnderecoUrbano | TEnderecoRural;
+  endereco: Endereco;
 };
+
+export interface IGetPontoConexaoCliente {
+  pontos: {
+    id: string;
+    status: TPontoConexaoStatus;
+    loginMK: string;
+    endereco: Endereco;
+  }[];
+}
 
 // Criar/Editar Cliente
 // export type TFormPontoConexao = {

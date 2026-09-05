@@ -42,4 +42,10 @@ export const connectionPointService = {
       method: "DELETE",
     });
   },
+
+  getByClientId(clientId: string) {
+    return useApi(`ponto-conexao/${clientId}`, {
+      method: "GET",
+    });
+  },
 };
