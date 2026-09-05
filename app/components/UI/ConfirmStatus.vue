@@ -45,7 +45,7 @@ import type { UINuxtColors } from "~/types/ui";
 
 const emit = defineEmits(["confirm"]);
 
-type IItemTypes = "point";
+type IItemTypes = "point" | "support";
 
 interface ItemTypeConfig {
   title: string;
@@ -69,6 +69,14 @@ const itemTypeConfig: Record<IItemTypes, ItemTypeConfig> = {
       "A conexão será encerrada.",
       "Não esqueça de abrir chamado para retirada dos equipamentos.",
     ],
+  },
+  support: {
+    title: "Excluir ordem de serviço",
+    verb: "excluir",
+    entity: "a ordem de serviço",
+    confirmLabel: "Excluir",
+    confirmIcon: "lucide:check",
+    confirmColor: "error",
   },
 };
 

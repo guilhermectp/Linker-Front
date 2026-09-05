@@ -6,7 +6,7 @@ import { type DateValue } from "@internationalized/date";
 export interface IServiceOrder {
   id: string;
   numeroOs: string;
-  situacao: TServiceOrderStatus;
+  status: TServiceOrderStatus;
   tipo: TServiceOrderType;
   dataAbertura: string;
   dataAgendada: string;
@@ -23,14 +23,22 @@ export type TServiceOrderType =
   | "CANCELAMENTO"
   | "TROCA_ENDERECO";
 
-export type TServiceOrderStatus = "EM_ANDAMENTO" | "FINALIZADA" | "CANCELADA";
+export type TServiceOrderStatus = "AGENDADA" | "FINALIZADA" | "CANCELADA";
 
 // Post / Patch
 export interface PostOrdemServico {
   idCliente: string;
+  idPontoConexao: string;
   tipoServico: TServiceOrderType | undefined;
   observacao: string;
   dataAgendada: string; // ISO
+}
+
+export interface PatchOrdemServico {
+  idCliente: string;
+  tipoServico: TServiceOrderType | undefined;
+  observacao?: string;
+  dataAgendada?: string; // ISO
 }
 
 // UI

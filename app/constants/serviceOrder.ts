@@ -33,7 +33,7 @@ export const SERVICE_TYPE: Record<TServiceOrderType, IServiceOrderUIMap> = {
 };
 
 export const SERVICE_STATUS: Record<TServiceOrderStatus, StatusConfig> = {
-  EM_ANDAMENTO: { label: "Pendente", color: "warning" },
+  AGENDADA: { label: "Agendada", color: "warning" },
   FINALIZADA: { label: "Finalizada", color: "success" },
   CANCELADA: { label: "Cancelada", color: "error" },
 };

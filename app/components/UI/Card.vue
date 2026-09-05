@@ -1,9 +1,7 @@
 <template>
   <div class="mt-3 space-y-4">
     <template v-if="loading">
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <USkeleton v-for="i in itemsPerPage" class="h-66.25" />
       </div>
     </template>
@@ -13,9 +11,7 @@
     </template>
 
     <template v-else>
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <slot :data="data">
           <UCard
             v-for="(item, index) in data"

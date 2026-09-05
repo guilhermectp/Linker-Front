@@ -12,23 +12,40 @@ export const dateValueToIso = (date: DateValue | null | undefined): string => {
 // /**
 //  * Extrai apenas a parte da data (YYYY-MM-DD) de uma string ISO
 //  */
-// export const extractDatePart = (dateStr: string): string => {
-//   return dateStr.includes("T") ? dateStr.split("T")[0]! : dateStr;
-// };
+const extractDatePart = (dateStr: string): string => {
+  return dateStr.includes("T") ? dateStr.split("T")[0]! : dateStr;
+};
+
+const parseDateParts = (
+  dateStr: string,
+): { year: number; month: number; day: number } => {
+  const dateOnly = extractDatePart(dateStr);
+  const [y, m, d] = dateOnly.split("-").map(Number);
+
+  if (!y || !m || !d || isNaN(y) || isNaN(m) || isNaN(d)) {
+    throw new Error(`Data inválida: "${dateStr}"`);
+  }
+
+  if (m < 1 || m > 12 || d < 1 || d > 31) {
+    throw new Error(`Data fora do intervalo: "${dateStr}"`);
+  }
+
+  return { year: y, month: m, day: d };
+};
 
 // /**
 //  * Converte data ISO para formato brasileiro (DD/MM/YYYY)
 //  */
-// export const isoToDateBR = (iso: string | null | undefined): string => {
-//   if (!iso) return "-";
+export const isoToDateBR = (iso: string | null | undefined): string => {
+  if (!iso) return "-";
 
-//   try {
-//     const { year, month, day } = parseDateParts(iso);
-//     return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
-//   } catch {
-//     return "Erro ao formatar data";
-//   }
-// };
+  try {
+    const { year, month, day } = parseDateParts(iso);
+    return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
+  } catch {
+    return "Erro ao formatar data";
+  }
+};
 
 /**
  * Converte hora ISO para formato brasileiro (HH:MM)

@@ -1,4 +1,4 @@
-import type { PostOrdemServico } from "~/types/serviceOrder";
+import type { PatchOrdemServico, PostOrdemServico } from "~/types/serviceOrder";
 
 export const serviceService = {
   create(newSupport: PostOrdemServico) {
@@ -8,10 +8,16 @@ export const serviceService = {
     });
   },
 
-  //  update(id: string, updatedSupport: ServiceUpdateBody) {
-  //   return useApi(`/suporte/${id}`, {
-  //     method: "PATCH",
-  //     body: updatedSupport,
-  //   });
-  // },
+  update(id: string, updatedSupport: PatchOrdemServico) {
+    return useApi(`/suporte/${id}`, {
+      method: "PATCH",
+      body: updatedSupport,
+    });
+  },
+
+  delete(id: string) {
+    return useApi(`/suporte/${id}`, {
+      method: "DELETE",
+    });
+  },
 };
