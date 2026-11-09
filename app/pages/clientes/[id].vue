@@ -1,90 +1,90 @@
 <template>
-  <template v-if="status === 'pending'">
-    <UIRequestLoader message="Buscando dados do cliente..." />
-  </template>
+  <div class="space-y-4">
+    <AppHeaderTitle>
+      <UButton label="Voltar" color="neutral" variant="ghost" to="/clientes" />
+    </AppHeaderTitle>
 
-  <template v-if="error">
-    <UIRequestError :error="error" @retry="refresh" />
-  </template>
+    <UIRequestLoader
+      v-if="status === 'pending'"
+      message="Buscando dados do cliente..."
+    />
 
-  <div v-if="client" class="space-y-6">
-    <div class="flex items-center justify-between gap-4">
-      <UButton
-        icon="i-heroicons-arrow-left"
-        color="neutral"
-        variant="ghost"
-        to="/clientes"
-      />
-    </div>
+    <UIRequestError v-if="error" :error="error" @retry="refresh" />
 
-    <UCard variant="subtle">
-      <template #header>
-        <div class="flex justify-between items-center gap-4">
-          <h3 class="font-semibold">Informações do Cliente</h3>
+    <div v-if="client" class="space-y-6">
+      <div class="flex items-center justify-between gap-4"></div>
 
-          <div class="flex gap-4 items-center">
+      <UCard variant="subtle">
+        <template #header>
+          <div class="flex justify-between items-center gap-4">
+            <h3 class="font-semibold">Informações do Cliente</h3>
+
+            <div class="flex gap-4 items-center">
+              <UButton
+                label="Alterar senha central do cliente"
+                variant="ghost"
+                icon="lucide:lock"
+                @click="openEditPassword"
+              />
+              <USeparator orientation="vertical" class="h-8" />
+              <UButton
+                icon="lucide:user-pen"
+                variant="ghost"
+                label="Editar Cliente"
+                @click="openEditPersonalInfo"
+              />
+            </div>
+          </div>
+        </template>
+        <dl class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div>
+            <dt class="text-sm text-gray-500">Nome</dt>
+            <dd class="font-medium">{{ client.nome }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">CPF</dt>
+            <dd class="font-medium">{{ formatCPF(client.cpf) }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Email</dt>
+            <dd class="font-medium">{{ client.email }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Telefone</dt>
+            <dd class="font-medium">{{ client.telefone }}</dd>
+          </div>
+        </dl>
+      </UCard>
+
+      <UCard variant="subtle">
+        <template #header>
+          <div class="flex justify-between items-center gap-4">
+            <h3 class="font-semibold">
+              <span v-if="client.pontos?.length > 1">
+                Pontos de Conexão ({{ client.pontos?.length }})
+              </span>
+              <span v-else>Plano e Endereço</span>
+            </h3>
+
             <UButton
-              label="Alterar senha central do cliente"
+              icon="i-heroicons-plus"
               variant="ghost"
-              icon="lucide:lock"
-              @click="openEditPassword"
-            />
-            <USeparator orientation="vertical" class="h-8" />
-            <UButton
-              icon="lucide:user-pen"
-              variant="ghost"
-              label="Editar Cliente"
-              @click="openEditPersonalInfo"
+              label=" Adicionar Ponto"
+              @click="openAddConnectionPoint"
             />
           </div>
-        </div>
-      </template>
-      <dl class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div>
-          <dt class="text-sm text-gray-500">Nome</dt>
-          <dd class="font-medium">{{ client.nome }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-gray-500">CPF</dt>
-          <dd class="font-medium">{{ formatCPF(client.cpf) }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-gray-500">Email</dt>
-          <dd class="font-medium">{{ client.email }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-gray-500">Telefone</dt>
-          <dd class="font-medium">{{ client.telefone }}</dd>
-        </div>
-      </dl>
-    </UCard>
+        </template>
 
-    <UCard variant="subtle">
-      <template #header>
-        <div class="flex justify-between items-center gap-4">
-          <h3 class="font-semibold">
-            <span v-if="client.pontos?.length > 1">
-              Pontos de Conexão ({{ client.pontos?.length }})
-            </span>
-            <span v-else>Plano e Endereço</span>
-          </h3>
+        <ClientConnection :client="client" />
+      </UCard>
 
-          <UButton
-            icon="i-heroicons-plus"
-            variant="ghost"
-            label=" Adicionar Ponto"
-            @click="openAddConnectionPoint"
-          />
-        </div>
-      </template>
-
-      <ClientConnection :client="client" />
-    </UCard>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <ClientInvoiceList />
-      <SupportList />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ClientInvoiceList />
+        <SupportList />
+      </div>
     </div>
+
+    <div>Cliente não encontrado.</div>
   </div>
 </template>
 
