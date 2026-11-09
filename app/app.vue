@@ -1,6 +1,6 @@
 <template>
   <UApp :locale="pt_br">
-    <UHeader mode="slideover" class="bg-neutral-50 dark:bg-elevated">
+    <!-- <UHeader mode="slideover" class="bg-neutral-50 dark:bg-elevated">
       <template #left>
         <NuxtLink to="/"> Linker </NuxtLink>
       </template>
@@ -31,13 +31,13 @@
           orientation="vertical"
         />
       </template>
-    </UHeader>
+    </UHeader> -->
 
-    <UMain>
-      <UContainer class="p-4 lg:p-8">
-        <NuxtPage />
-      </UContainer>
-    </UMain>
+    <NuxtLayout>
+      <!-- <UContainer> -->
+      <NuxtPage />
+      <!-- </UContainer> -->
+    </NuxtLayout>
     <!--
     <USeparator icon="i-simple-icons-nuxtdotjs" />
 
@@ -103,6 +103,11 @@ const items = ref<NavigationMenuItem[]>([
     label: "Planos",
     // icon: "lucide:tags",
     to: "/planos",
+  },
+  {
+    label: "Boletos",
+    // icon: "lucide:dollar-sign",
+    to: "/boletos",
   },
   {
     label: "Financeiro",

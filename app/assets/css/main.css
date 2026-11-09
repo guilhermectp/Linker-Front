@@ -1,35 +1,26 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
-@theme static {
-  --color-slate-50: #f4f6f8;
-  --color-slate-100: #eef1f5;
-  --color-slate-200: #dde3ec;
-  --color-slate-300: #b0bac6;
-  --color-slate-400: #8b949e;
-  --color-slate-500: #5a6473;
-  --color-slate-600: #3d4554;
-  --color-slate-700: #1c2333;
-  --color-slate-800: #161b22;
-  --color-slate-900: #0d1117;
-  --color-slate-950: #070c11;
-}
-:root {
-  --ui-bg: var(--color-slate-100);
 
-  --ui-border: rgba(0, 0, 0, 0.08);
-  --ui-border-muted: rgba(0, 0, 0, 0.05);
-  --ui-border-accented: rgba(0, 0, 0, 0.12);
-  --ui-border-inverted: var(--color-slate-900);
+@theme static {
+  --breakpoint-xs: 30rem;
+}
+
+:root,
+.light {
+  --ui-bg: var(--ui-color-neutral-50);
+  --ui-bg-muted: var(--ui-color-neutral-100);
+  --ui-text-inverted: var(--ui-color-neutral-50);
 }
 
 .dark {
-  --ui-bg: var(--color-slate-900);
-
-  --ui-border: rgba(255, 255, 255, 0.08);
-  --ui-border-muted: rgba(255, 255, 255, 0.05);
-  --ui-border-accented: rgba(255, 255, 255, 0.12);
-  --ui-border-inverted: var(--color-slate-100);
+  --ui-text-highlighted: var(--ui-color-neutral-50);
+  --ui-bg-inverted: var(--ui-color-neutral-50);
+  --ui-border-inverted: var(--ui-color-neutral-50);
+  --ui-bg: var(--ui-color-neutral-900);
+  --ui-bg-muted: var(--ui-color-neutral-800);
+  --ui-text-inverted: var(--ui-color-neutral-900);
 }
+
 
 /* @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"); */
 */ body {
