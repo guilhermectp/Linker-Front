@@ -10,7 +10,6 @@ export interface Cliente {
   email: string;
   telefone: string;
   senhaCentralCliente: string;
-  status: ClienteStatus;
   pontos: TGetPontoConexao[];
 }
 

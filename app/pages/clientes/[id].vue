@@ -15,12 +15,6 @@
         variant="ghost"
         to="/clientes"
       />
-      <UBadge
-        :color="client.status === 'ATIVO' ? 'primary' : 'neutral'"
-        size="xl"
-      >
-        {{ STATUS_CLIENT[client.status]?.label }}
-      </UBadge>
     </div>
 
     <UCard variant="subtle">
@@ -98,7 +92,6 @@
 import AddConnectionPoint from "~/components/Client/AddConnectionPoint.vue";
 import EditPassword from "~/components/Client/EditPassword.vue";
 import EditPersonalInfo from "~/components/Client/EditPersonalInfo.vue";
-import { STATUS_CLIENT } from "~/constants/enumClient";
 import type { Cliente } from "~/types/clients";
 const overlay = useOverlay();
 const route = useRoute();

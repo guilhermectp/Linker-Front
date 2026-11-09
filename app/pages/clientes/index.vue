@@ -11,7 +11,7 @@
       <USelectMenu
         v-model="statusFilter"
         :items="statusItems"
-        placeholder="Filtrar por tipo de cadastro"
+        placeholder="Filtrar por situação"
         class="flex-1 min-w-72"
         size="lg"
         label-key="label"
@@ -62,24 +62,36 @@
         :data="data?.data || []"
         :error="error"
         :columns="columns"
-        :page="page"
-        :items-per-page="itemsPerPage"
+        v-model:page="page"
+        v-model:items-per-page="itemsPerPage"
         :total-elements="totalElements"
-        @update:page="page = $event"
-        @update:items-per-page="itemsPerPage = $event"
         @retry="refresh"
-      />
+      >
+        <template #status-cell="{ row }">
+          <div v-if="row.original.pontos.length" class="flex gap-1">
+            <UBadge
+              v-for="ponto in row.original.pontos"
+              :key="ponto.id"
+              variant="soft"
+              :label="STATUS_POINT[(ponto as TGetPontoConexao).status].label"
+              :color="STATUS_POINT[(ponto as TGetPontoConexao).status].color"
+              class="rounded-full px-4"
+            />
+          </div>
+
+          <div v-else>-</div>
+        </template>
+      </UITable>
     </template>
+
     <template v-else>
       <UICard
         :loading="status === 'pending'"
         :data="data?.data || []"
         :error="error"
-        :page="page"
-        :items-per-page="itemsPerPage"
+        v-model:page="page"
+        v-model:items-per-page="itemsPerPage"
         :total-elements="totalElements"
-        @update:page="page = $event"
-        @update:items-per-page="itemsPerPage = $event"
         @retry="refresh"
       >
         <template #card-content="{ item }">
@@ -107,25 +119,13 @@
               <dt class="text-muted min-w-18 shrink-0">Telefone:</dt>
               <dd class="text-default font-medium">{{ item.telefone }}</dd>
             </div>
-            <div class="flex gap-2 text-sm">
-              <dt class="text-muted min-w-18 shrink-0">Cadastro:</dt>
-              <dd>
-                <UBadge
-                  variant="soft"
-                  :label="STATUS_CLIENT[item.status].label"
-                  :color="STATUS_CLIENT[item.status].color"
-                  class="rounded-full px-4"
-                />
-              </dd>
-            </div>
             <div class="flex gap-2 text-[13px]">
-              <dt class="text-muted min-w-18 shrink-0">Situação:</dt>
+              <dt class="text-muted min-w-18 shrink-0">Pontos:</dt>
               <dd
                 class="text-default font-medium break-all flex gap-1 flex-wrap"
               >
                 <UBadge
                   v-for="ponto in item.pontos"
-                  v-if="item.status !== 'SUSPENSO'"
                   :key="ponto.id"
                   variant="soft"
                   :label="STATUS_POINT[ponto.status].label"
@@ -144,20 +144,36 @@
 <script setup lang="ts">
 import type { SelectItem, TableColumn } from "@nuxt/ui";
 import type { Cliente, FetchClientes } from "~/types/clients";
-import { STATUS_CLIENT } from "~/constants/enumClient";
-import { STATUS_POINT } from "~/constants/enumConnectionPoint";
+import {
+  ENUM_STATUS_POINT,
+  STATUS_POINT,
+} from "~/constants/enumConnectionPoint";
+import type { TGetPontoConexao } from "~/types/connectionPoint";
+
+definePageMeta({
+  title: "Clientes",
+});
 
 const UButton = resolveComponent("UButton");
 const UBadge = resolveComponent("UBadge");
 
+// Filtro de acordo com pontos - arrumar no back
 const statusItems = ref<SelectItem[]>([
   {
     label: "Ativo",
-    value: "ATIVO",
+    value: ENUM_STATUS_POINT.ATIVO,
   },
   {
-    label: "Desativado",
-    value: "INATIVO",
+    label: "Reduzido",
+    value: ENUM_STATUS_POINT.REDUZIDO,
+  },
+  {
+    label: "Bloqueado",
+    value: ENUM_STATUS_POINT.BLOQUEADO,
+  },
+  {
+    label: "Cancelado",
+    value: ENUM_STATUS_POINT.CANCELADO,
   },
 ]);
 
@@ -182,25 +198,10 @@ const currentView = ref<"cards" | "table">("table");
 
 const page = ref<number>(1);
 const itemsPerPage = ref<number>(10);
-const totalElements = ref<number>(page.value * itemsPerPage.value);
-
-watch([nameOrUsernameFilterDebounced, statusFilter, addressFilter], () => {
-  page.value = 1;
-});
-
-const filtersKey = computed(() =>
-  [
-    "fetch-clients",
-    nameOrUsernameFilterDebounced.value,
-    statusFilter.value,
-    addressFilter.value,
-    page.value,
-    itemsPerPage.value,
-  ].join("-"),
-);
+const totalElements = ref<number>(0);
 
 const { data, status, error, refresh } = await useAsyncApi<FetchClientes>(
-  filtersKey,
+  "fetch-clients",
   "/clientes",
   {
     query: {
@@ -210,14 +211,26 @@ const { data, status, error, refresh } = await useAsyncApi<FetchClientes>(
       situacao: () => statusFilter.value || undefined,
       tipoEndereco: () => addressFilter.value || undefined,
     },
+    watch: [
+      page,
+      itemsPerPage,
+      nameOrUsernameFilterDebounced,
+      statusFilter,
+      addressFilter,
+    ],
   },
 );
 
+watch(
+  [nameOrUsernameFilterDebounced, statusFilter, addressFilter, itemsPerPage],
+  () => {
+    page.value = 0;
+  },
+  { flush: "sync" },
+);
+
 watch(data, (newValue) => {
-  if (newValue) {
-    itemsPerPage.value = newValue.itemsPorPagina;
-    totalElements.value = newValue.total;
-  }
+  if (newValue) totalElements.value = newValue.total;
 });
 
 const columns: TableColumn<Cliente>[] = [
@@ -235,50 +248,7 @@ const columns: TableColumn<Cliente>[] = [
   },
   {
     accessorKey: "status",
-    header: "Cadastro",
-    cell: ({ row }) => {
-      const status = STATUS_CLIENT[row.original.status];
-
-      return h(
-        UBadge,
-        {
-          color: status?.color,
-          variant: "soft",
-          class: "px-4 rounded-full",
-          title: status?.label,
-        },
-        () => status?.label,
-      );
-    },
-  },
-  {
-    accessorKey: "status",
     header: "Situação",
-    cell: ({ row }) => {
-      const pontos = row.original.pontos || [];
-
-      return h(
-        "div",
-        { class: "flex gap-1" },
-        pontos.map((ponto) => {
-          if (row.original.status === "SUSPENSO") return;
-
-          const status = STATUS_POINT[ponto.status];
-
-          return h(
-            UBadge,
-            {
-              key: ponto.id,
-              color: status?.color,
-              variant: "soft",
-              class: "px-4 rounded-full",
-              title: status?.label,
-            },
-            () => status?.label,
-          );
-        }),
-      );
-    },
   },
   {
     id: "actions",
