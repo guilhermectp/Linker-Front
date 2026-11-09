@@ -1,5 +1,16 @@
 <template>
-  <div>
+  <div class="space-y-6">
+    <AppHeaderTitle>
+      <UButton
+        label="Voltar"
+        color="neutral"
+        variant="ghost"
+        @click="handleBack"
+      />
+    </AppHeaderTitle>
+
+    <h1 class="text-center font-medium text-xl">Criação de Cliente</h1>
+
     <UForm
       :state="stepStates[currentStepIndex]"
       :schema="stepSchemas[currentStepIndex]"
@@ -51,6 +62,7 @@ import {
   connectionPointPlanSchema,
 } from "~/schema/connectionPoint";
 import { clientService } from "~/services/client";
+
 const toast = useToast();
 
 const items = [
