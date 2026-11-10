@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TPlan } from "~/types/plan";
+import type { Plano } from "~/types/plan";
 import { planService } from "~/services/plan";
 import {
   planCreateSchema,
@@ -97,7 +97,7 @@ const state = reactive<Partial<TPlanCreate>>({
 });
 
 const props = defineProps<{
-  plan?: TPlan;
+  plan?: Plano;
 }>();
 
 const isLoading = ref<boolean>(false);

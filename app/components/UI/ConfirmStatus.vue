@@ -24,14 +24,11 @@
           label="Cancelar"
           color="neutral"
           variant="outline"
-          :disabled="isLoading"
           @click="close"
         />
         <UButton
           :label="config.confirmLabel"
           :icon="config.confirmIcon"
-          :loading="isLoading"
-          :disabled="isLoading"
           :color="config.confirmColor"
           @click="confirm(close)"
         />
@@ -45,7 +42,7 @@ import type { UINuxtColors } from "~/types/ui";
 
 const emit = defineEmits(["confirm"]);
 
-type IItemTypes = "point" | "support";
+type IItemTypes = "point" | "support" | "plan";
 
 interface ItemTypeConfig {
   title: string;
@@ -78,12 +75,19 @@ const itemTypeConfig: Record<IItemTypes, ItemTypeConfig> = {
     confirmIcon: "lucide:check",
     confirmColor: "error",
   },
+  plan: {
+    title: "Excluir plano",
+    verb: "excluir",
+    entity: "o plano",
+    confirmLabel: "Excluir",
+    confirmIcon: "lucide:check",
+    confirmColor: "error",
+  },
 };
 
 const props = defineProps<{
   itemType: IItemTypes;
   itemName?: string;
-  isLoading?: boolean;
 }>();
 
 const config = computed(() => itemTypeConfig[props.itemType]);
