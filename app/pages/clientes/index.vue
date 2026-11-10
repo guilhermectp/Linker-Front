@@ -201,7 +201,7 @@ const itemsPerPage = ref<number>(10);
 const totalElements = ref<number>(0);
 
 const { data, status, error, refresh } = await useAsyncApi<FetchClientes>(
-  "fetch-clients",
+  "clientes-fetch",
   "/clientes",
   {
     query: {
