@@ -16,11 +16,18 @@
           <UCard
             v-for="(item, index) in data"
             :key="index"
-            class="group relative shadow-sm hover:shadow-md hover:ring-primary transition-all duration-300 cursor-pointer"
+            :ui="{ body: 'flex-1 flex flex-col' }"
+            class="group relative shadow-sm hover:shadow-md hover:ring-primary transition-all duration-300 h-full flex flex-col"
           >
-            <slot name="card-content" :item="item">
-              {{ item }}
-            </slot>
+            <template #header>
+              <slot name="card-header" :item="item" />
+            </template>
+
+            <slot name="card-content" :item="item" />
+
+            <template #footer>
+              <slot name="card-footer" :item="item" />
+            </template>
           </UCard>
         </div>
       </slot>
