@@ -21,13 +21,13 @@
     <template #footer="{ close }">
       <div class="flex justify-end gap-3 w-full">
         <UButton
-          label="Cancelar"
+          :label="config.confirmCancel || 'Cancelar'"
           color="neutral"
           variant="outline"
           @click="close"
         />
         <UButton
-          :label="config.confirmLabel"
+          :label="config.confirmLabel || 'Excluir'"
           :icon="config.confirmIcon"
           :color="config.confirmColor"
           @click="confirm(close)"
@@ -42,45 +42,64 @@ import type { UINuxtColors } from "~/types/ui";
 
 const emit = defineEmits(["confirm"]);
 
-type IItemTypes = "point" | "support" | "plan";
+type IItemTypes =
+  | "cancelPoint"
+  // | "activePoint"
+  // | "grantAccessPoint"
+  | "support"
+  | "plan";
 
 interface ItemTypeConfig {
   title: string;
   verb: string;
   entity: string;
-  confirmLabel: string;
-  confirmIcon?: string;
   confirmColor: UINuxtColors;
+  confirmLabel?: string;
+  confirmCancel?: string;
+  confirmIcon?: string;
   consequences?: string[];
 }
 
 const itemTypeConfig: Record<IItemTypes, ItemTypeConfig> = {
-  point: {
-    title: "Excluir ponto",
-    verb: "excluir",
+  cancelPoint: {
+    title: "Cancelar ponto",
+    verb: "cancelar",
     entity: "o ponto",
-    confirmLabel: "Excluir",
-    confirmIcon: "lucide:check",
+    confirmLabel: "Sim, cancelar",
+    confirmCancel: "Não",
     confirmColor: "error",
     consequences: [
-      "A conexão será encerrada.",
-      "Não esqueça de abrir chamado para retirada dos equipamentos.",
+      "O ponto continuará no histórico do cliente.",
+      "O ponto poderá ser reativado posteriormente.",
+      "Não se esqueça de gerar uma Ordem de Serviço para retirada dos equipamentos.",
     ],
   },
+  // activePoint: {
+  //   title: "Ativar ponto",
+  //   verb: "ativar",
+  //   entity: "o ponto",
+  //   confirmLabel: "Sim, ativar",
+  //   confirmCancel: "Não",
+  //   confirmColor: "success",
+  // },
+  // grantAccessPoint: {
+  //   title: "Liberar acesso",
+  //   verb: "liberar",
+  //   entity: "o acesso do ponto",
+  //   confirmLabel: "Sim, liberar",
+  //   confirmCancel: "Não",
+  //   confirmColor: "warning",
+  // },
   support: {
     title: "Excluir ordem de serviço",
     verb: "excluir",
     entity: "a ordem de serviço",
-    confirmLabel: "Excluir",
-    confirmIcon: "lucide:check",
     confirmColor: "error",
   },
   plan: {
     title: "Excluir plano",
     verb: "excluir",
     entity: "o plano",
-    confirmLabel: "Excluir",
-    confirmIcon: "lucide:check",
     confirmColor: "error",
   },
 };

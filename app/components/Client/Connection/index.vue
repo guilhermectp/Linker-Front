@@ -125,7 +125,8 @@ import type { TGetPontoConexao } from "~/types/connectionPoint";
 import EditPlan from "~/components/Client/Connection/EditPlan.vue";
 import EditAccess from "~/components/Client/Connection/EditAccess.vue";
 import EditAddress from "~/components/Client/Connection/EditAddress.vue";
-import UIConfirmStatus from "~/components/UI/ConfirmStatus.vue";
+import ConfirmStatus from "~/components/UI/ConfirmStatus.vue";
+import RequestLoader from "~/components/UI/RequestLoader.vue";
 
 const overlay = useOverlay();
 
@@ -138,9 +139,9 @@ const selectedPoint = ref<string | null>(null);
 // alterar plano e data vencimento - ok
 // alterar loginMK e senha MK - ok
 // alterar endereço - ok
-// cancelar ponto - ok
-// reativar ponto - AINDA NAO
-// liberar acesso - AINDA NAO
+// cancelar ponto - EXCLUIR PONTO - OK - POREM DEVERIA APENAS INATIVAR, MANTER O PONTO NO HISTÓRICO
+// reativar ponto - AINDA NAO - COMO FUCIONARIA ISSO?
+// liberar acesso - AINDA NAO - COMO FUNCIONARIA ISSO?
 
 const isLoadingDelete = ref<boolean>(false);
 
@@ -209,19 +210,29 @@ const getPointActions = (ponto: TGetPontoConexao) => {
       label: "Cancelar Ponto",
       icon: "lucide:trash-2",
       onSelect: () => {
-        const modal = overlay.create(UIConfirmStatus);
+        const modal = overlay.create(ConfirmStatus);
+        const modalLoading = overlay.create(RequestLoader);
+        const name =
+          ponto.endereco.tipoEndereco === "URBANO"
+            ? ponto.endereco.rua
+            : ponto.endereco.cidadeReferencia;
+
         modal.open({
-          itemType: "point",
+          itemType: "cancelPoint",
+          itemName: name,
           onConfirm: async () => {
             try {
-              isLoadingDelete.value = true;
+              modalLoading.open({
+                message: `Cancelando ponto localizado em: ${name}...`,
+              });
 
               await connectionPointService.delete(ponto.id);
+
               Toast.success("Plano cancelado");
             } catch (error) {
               Toast.error(error);
             } finally {
-              isLoadingDelete.value = false;
+              modalLoading.close();
             }
           },
         });

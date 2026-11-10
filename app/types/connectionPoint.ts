@@ -1,4 +1,4 @@
-import type { TPlan } from "./plan";
+import type { Plano } from "./plan";
 
 export type TPontoConexaoStatus =
   | "ATIVO"
@@ -39,8 +39,7 @@ export type TGetPontoConexao = {
   diaVencimento: number;
   diaUltimoPagamento: string;
   loginMK: string;
-  senhaMK: string;
-  plano: TPlan;
+  plano: Plano;
   endereco: Endereco;
 };
 
