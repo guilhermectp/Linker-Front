@@ -7,6 +7,7 @@
         label-key="nome"
         value-key="id"
         class="w-full"
+        placeholder="Selecione um plano"
         :disabled="isLoadingPlans"
         :loading="isLoadingPlans"
       />
@@ -24,7 +25,7 @@
 
 <script setup lang="ts">
 import type { TConnectionPointPlan } from "~/schema/connectionPoint";
-import type { TPlan } from "~/types/plan";
+import type { Plano } from "~/types/plan";
 
 const props = defineProps({
   modelValue: {
@@ -40,9 +41,9 @@ const model = computed({
   set: (val) => emit("update:modelValue", val),
 });
 
-const { data, status } = await useAsyncApi<TPlan[]>(
-  "plans-fetch-all-select",
-  "/planos",
+const { data, status } = await useAsyncApi<Plano[]>(
+  "planos-seletor",
+  "/planos/sem-paginacao",
   {
     lazy: true,
   },
